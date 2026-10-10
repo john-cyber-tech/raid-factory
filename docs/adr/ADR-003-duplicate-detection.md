@@ -31,7 +31,7 @@ Option 1, as a pure function (COMP-06) that takes a proposal and the log's items
 - Decided: a merge adds the proposal's source to the existing item and keeps the existing item's values (DEC-15).
 - Decided: a Closed item is offered as a likely duplicate, the same as an open one, and `raid add` does not run the check (DEC-17).
 - Bad: an item added by hand can therefore duplicate an existing one without any warning.
-- Bad: merging into a Closed item leaves it Closed, because a merge keeps the existing item's values (DEC-15). A risk that has come back must be reopened by the manager as a separate step.
+- Changed 2026-10-10 (DEC-22): merging into a Closed item reopens it, after the review prompt has said so and the manager has confirmed. This replaces the earlier consequence that such an item stayed Closed. The decision of this record, rule-based detection that only suggests, is unchanged.
 
 ## Agent-readable summary
 

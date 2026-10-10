@@ -1,7 +1,7 @@
 # SPEC-EPIC-4-01 — Generate the weekly summary with new and overdue items
 
 **Story:** EPIC-4-01 · **Covers:** REQ-028, REQ-029, REQ-030 · **Components:** COMP-08, COMP-03, COMP-07
-**Build order:** 23 of 25 · **Risk tier:** MEDIUM (Two open questions (OQ-07, OQ-17) and a new file written.) · **Depends on:** SPEC-EPIC-3-01, SPEC-EPIC-5-02
+**Build order:** 23 of 25 · **Risk tier:** MEDIUM (A new file is written to the project folder.) · **Depends on:** SPEC-EPIC-3-01, SPEC-EPIC-5-02
 
 ## Why
 
@@ -23,14 +23,14 @@ The Friday summary takes 45 minutes by hand (NEED-05).
 - Five sections fixed by decision (DEC-03).
 - Overdue uses the flagger's rule, not a second copy (REQ-030).
 - "This week" is 7 days including today (A-5).
-- Markdown only until OQ-07 is answered (OQ-07).
-- No source excerpts in the summary until OQ-17 is answered (OQ-17).
+- Markdown only (DEC-21).
+- No source excerpts in the summary (DEC-21).
 - The summary never changes the log (REQ-028, ADR-001).
 - The file is written in the project folder (NFR-006).
 
 ## Non-goals
 
-- PDF output (OQ-07).
+- PDF output (DEC-21).
 - Sending the summary (brief, non-goals).
 - Top risks, dependencies, decisions (SPEC-EPIC-4-02).
 - Owners and the word limit (SPEC-EPIC-4-03).
@@ -52,7 +52,7 @@ The Criteria column gives the story's acceptance criterion numbers; CF-n is an i
 | `test_empty_sections_say_none` | 4 | Each section present with "None". REQ-028. |
 | `test_empty_log_summary` | 5 | File written, says there are no items. REQ-028. |
 | `test_same_day_summary_overwrites` | CF-3 | Second run the same day: still one file, with the newer content. |
-| `test_summary_has_no_excerpts` | 1 | No source excerpt text appears in the file. OQ-17. |
+| `test_summary_has_no_excerpts` | 1 | No source excerpt text appears in the file. DEC-21. |
 | `test_closed_items_not_in_new_or_overdue` | 3 | Edge: a Closed item created this week and past due appears in neither. |
 
 **Test data:** Logs built by the test; today 2026-10-10.

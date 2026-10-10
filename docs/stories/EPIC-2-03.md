@@ -1,7 +1,7 @@
 # EPIC-2-03 — Status, and closing an item with a reason
 
 **Epic:** EPIC-2 Log management · **Covers:** REQ-016, REQ-017, REQ-018 · **Size:** S · **Build order:** 14 of 25
-**Depends on:** EPIC-2-02, EPIC-2-06 · **Open questions:** OQ-16
+**Depends on:** EPIC-2-02, EPIC-2-06 · **Open questions:** none
 
 **Story:** As a project manager, I want each item to have a status and to give a reason when I close it, so that 'closed' in the log can be trusted.
 
@@ -17,4 +17,4 @@
 
 ## Notes
 
-Reopening with a reason is decision DEC-15. Whether the three statuses suit all four types is OQ-16.
+Reopening with a reason is decision DEC-15. The same three statuses apply to all four types (decision DEC-21).

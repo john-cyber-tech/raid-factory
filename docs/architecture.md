@@ -1,7 +1,7 @@
 # RAID Log Manager — Architecture (Stage 3, high-level design)
 
-**Status:** DRAFT (awaiting review), revised with decisions DEC-10 to DEC-19 · **Date:** 2026-10-10
-**Upstream:** `docs/requirements.md` (42 REQs, 10 NFRs, DEC-01 to DEC-19), `docs/epics.md`, `docs/stories/`
+**Status:** DRAFT (awaiting review), revised with decisions DEC-10 to DEC-22 · **Date:** 2026-10-10
+**Upstream:** `docs/requirements.md` (42 REQs, 10 NFRs, DEC-01 to DEC-22), `docs/epics.md`, `docs/stories/`
 **Decisions:** `docs/adr/ADR-001` to `ADR-006`, all Accepted on 2026-10-10.
 
 ## 1. Shape
@@ -78,7 +78,7 @@ flowchart LR
 1. The manager saves call notes as a file and runs `/raid-extract <notes file>` in Claude Code. COMP-01 reads the file as data and writes a complete `pending.json`: one proposal per item with type, title, description, owner, severity, due date, source excerpt and, only if the notes state a full date with a year, the source date.
 2. The manager runs `raid review`. COMP-02 validates the whole file first. Any failure stops here with a message; nothing is shown and the log is untouched.
 3. For each proposal, COMP-04 shows it with its excerpt and any likely duplicates from COMP-06, Closed items included. The manager may edit fields; an edit that breaks a rule is refused. A changed type or title re-runs the duplicate check.
-4. On **accept**, a missing source date is asked for, then COMP-05 allocates the next ID for the type, writes the creation history entry with the user's name from COMP-09, and saves atomically. On **merge**, the proposal's excerpt and date are added to the existing item's sources, the item's own values stay as they were, and a history entry records it. On **reject**, nothing is written to the log and the rejection is not recorded.
+4. On **accept**, a missing source date is asked for, then COMP-05 allocates the next ID for the type, writes the creation history entry with the user's name from COMP-09, and saves atomically. On **merge**, the proposal's excerpt and date are added to the existing item's sources, the item's title, owner, severity and due date stay as they were, and a history entry records it. If the existing item is Closed, the manager is told before confirming that the merge will reopen it; on confirming, the item returns to Open in the same save, with a second history entry giving the reason "reopened by merge of a new proposal" (DEC-22). On **reject**, nothing is written to the log and the rejection is not recorded.
 5. After each decision the proposal is removed from `pending.json` (atomic write), so an interrupted review resumes with only the undecided ones.
 6. Day to day, `raid list`, `show`, `update`, `close` and `flag` read and change the log through COMP-05, and `raid add` puts in an item by hand with the source "Added manually" and no duplicate check. Every change adds one history entry. A type cannot be changed; a Closed item can be reopened with a reason.
 7. On Friday, `raid summary` loads the log, COMP-08 renders at most 400 words, and the CLI writes `raid-summary-YYYY-MM-DD.md`. The manager sends that file. The log is not changed.
@@ -158,8 +158,7 @@ These are accepted consequences of the decisions above. They go into the release
 | L-1 | **Rejected proposals are not recorded.** Once a proposal is rejected in review it is gone; there is no trace of what extraction suggested and the manager turned down | Decided proposals are removed from `pending.json` | DEC-10 |
 | L-2 | **Single user.** One person uses a project folder. There is no locking: if two people save to the same log, the last save wins and the other change is lost without warning. The project manager has no separate way in | No logins or multi-user in v1 | DEC-13, ADR-001, ADR-005 |
 | L-3 | The name in the history is typed once per project and is not verified. The history is protected against the tool's own mistakes, not against someone editing the file by hand | No logins; plain JSON file | ADR-005, ADR-006 |
-| L-4 | Duplicates that are worded differently are not detected, and two items already in the log cannot be merged | Fixed key-word rule; merge exists only in review | ADR-003 |
+| L-4 | Duplicates that are worded differently are not detected, two items already in the log cannot be merged, and an item added by hand is not checked for duplicates | Fixed key-word rule; merge exists only in review; `raid add` skips the check | ADR-003, DEC-17 |
 | L-5 | Built and tested on Python 3.13. Compatibility with Python 3.12 is by inspection, not by a test run on 3.12 | No Python 3.12 on the build machine | DEC-14 |
 | L-6 | Extraction quality and its resistance to instructions hidden in notes are checked by hand, not by automated tests | The CLI never runs extraction | ADR-002 |
 | L-7 | **macOS only.** The tool is built and tested on macOS. It is expected to work on Linux and Windows, but that is not tested or supported in v1 | Only the build machine is tested | DEC-16 |
-| L-8 | An item added by hand is not checked for duplicates. Merging into a Closed item leaves it Closed | `raid add` skips the check; a merge keeps the existing item's values | DEC-17, DEC-15 |

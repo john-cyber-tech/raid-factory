@@ -1,7 +1,7 @@
 # SPEC-EPIC-3-04 — Merge a proposal into an existing item
 
 **Story:** EPIC-3-04 · **Covers:** REQ-024 · **Components:** COMP-04, COMP-05
-**Build order:** 21 of 25 · **Risk tier:** MEDIUM (Adds a new kind of write to an existing item.) · **Depends on:** SPEC-EPIC-3-03, SPEC-EPIC-5-02
+**Build order:** 21 of 25 · **Risk tier:** MEDIUM (Adds a new kind of write to an existing item and can reopen a Closed one; it goes through the store's existing save and adds no new write path.) · **Depends on:** SPEC-EPIC-3-03, SPEC-EPIC-5-02, SPEC-EPIC-2-03
 
 ## Why
 
@@ -16,22 +16,26 @@ The log should show one item with all the places it was raised (NEED-04).
 - A proposal with no source date is asked for one before merging, as for accept.
 - Accept with a duplicate shown means keep separate: a new ID is created.
 - `raid show` lists every source, the original first.
+- If the chosen item is Closed: before anything is written, print "R-001 is Closed. Merging will reopen it." and ask "Merge and reopen? (y/n)". On `y`, `store.py` adds the source and sets the status to Open in one save, appending two history entries: the merge, and the reopening with the reason "reopened by merge of a new proposal". On anything else, nothing is written and the proposal's question is asked again.
+- Merging into an item that is not Closed asks no extra question.
 
 ## Constraints
 
-- A merge keeps the existing item's title, owner, severity, due date and status (DEC-15).
+- A merge keeps the existing item's title, owner, severity and due date (DEC-15).
 - A merge happens only when the manager chooses it (DEC-01, ADR-003).
-- Merging into a Closed item leaves it Closed (DEC-15, DEC-17; limitation L-8).
+- Merging into a Closed item reopens it, after a warning and the manager's confirmation; the history records the reopening with the reason "reopened by merge of a new proposal", the date and the user's name (DEC-22).
+- The added source and the reopening are written in one save, so a crash cannot leave one without the other (ADR-001, NFR-002).
+- A reopening always carries a reason (DEC-15, REQ-018).
 - A source needs a date (DEC-08).
 
 ## Non-goals
 
 - Merging two items already in the log (limitation L-4).
-- Reopening on merge.
+- Reopening an item in any way other than by merge or by `raid update` (SPEC-EPIC-2-03).
 
 ## Success signal
 
-Choosing merge for a proposal shown against R-001 leaves exactly one Risk, with two sources and a merged entry in its history.
+Choosing merge for a proposal shown against R-001 leaves exactly one Risk, with two sources and a merged entry in its history. If R-001 was Closed, the prompt warns that merging will reopen it, and after confirming R-001 is Open with a reopening entry whose reason is "reopened by merge of a new proposal".
 
 ## Test plan
 
@@ -45,10 +49,15 @@ The Criteria column gives the story's acceptance criterion numbers; CF-n is an i
 | `test_reject_with_duplicate_shown` | 4 | Log unchanged. REQ-024. |
 | `test_merged_excerpt_visible_in_show` | CF-5 | `show R-001` prints both excerpts, original first. |
 | `test_merge_without_source_date_is_asked` | CF-5 | Proposal with no date: asked before the merge; empty answer cancels. |
-| `test_merge_into_closed_stays_closed` | 2 | Edge: Closed R-001 is still Closed after a merge. L-8. |
+| `test_merge_into_closed_warns_before_confirm` | 5 | Output contains "R-001 is Closed. Merging will reopen it." and the y/n question, and at that point the log file is byte-identical to before. DEC-22. |
+| `test_merge_into_closed_reopens_and_writes_history` | 6 | After `y` on 2026-10-10 as "Sean Murphy": status Open; two sources; history gained exactly two entries, a merge and a reopening with reason "reopened by merge of a new proposal", date 2026-10-10 and name "Sean Murphy". DEC-22. |
+| `test_merge_into_closed_declined_changes_nothing` | 7 | After `n`: R-001 still Closed, no new source, no new history entry; the proposal is asked about again and is still in `pending.json`. DEC-22. |
+| `test_merge_into_open_item_has_no_reopen_prompt` | 1 | Edge: merging into an Open or Mitigating item prints no warning and adds only the merge entry. |
+| `test_merge_reopen_is_one_save` | 6 | Failure path: the save fails during a confirmed merge into a Closed item; R-001 is still Closed with one source, and the proposal is still pending. NFR-002. |
+| `test_reopened_by_merge_shown_in_show` | 6 | `show R-001` prints the reopening entry with its reason, and the earlier closing entry with its reason is still there. |
 | `test_merge_not_offered_without_duplicate` | 4 | Failure path: `m` with no duplicate shown repeats the question. |
 
-**Test data:** R-001 owner "Priya Nair", High; proposal with empty owner, Low, same title.
+**Test data:** R-001 owner "Priya Nair", High; proposal with empty owner, Low, same title. A second log where R-001 was closed on 2026-10-08 with the reason "Security review completed"; today 2026-10-10; name "Sean Murphy".
 
 ## Definition of done
 

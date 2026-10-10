@@ -1,7 +1,7 @@
 # EPIC-1-05 — `/raid-extract` writes proposals from a notes file
 
 **Epic:** EPIC-1 Extraction and review · **Covers:** REQ-001, REQ-002, REQ-003, REQ-004, REQ-039 · **Size:** M · **Build order:** 9 of 25
-**Depends on:** EPIC-1-02, EPIC-1-04 · **Open questions:** OQ-18
+**Depends on:** EPIC-1-02, EPIC-1-04 · **Open questions:** none
 
 **Story:** As a delivery manager, I want to run one command on my call notes and get a list of candidate RAID items, so that I stop missing things I meant to write down.
 

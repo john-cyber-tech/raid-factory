@@ -1,7 +1,7 @@
 # EPIC-4-01 — Generate the weekly summary with new and overdue items
 
 **Epic:** EPIC-4 Weekly summary · **Covers:** REQ-028, REQ-029, REQ-030 · **Size:** M · **Build order:** 23 of 25
-**Depends on:** EPIC-3-01, EPIC-5-02 · **Open questions:** OQ-07, OQ-17
+**Depends on:** EPIC-3-01, EPIC-5-02 · **Open questions:** none
 
 **Story:** As a delivery manager, I want one command to write this week's RAID summary, so that Friday's update takes minutes instead of 45.
 
@@ -15,4 +15,4 @@
 
 ## Notes
 
-"This week" is the 7 days up to and including today (assumption A-5). The five v1 sections are fixed by decision DEC-03; this story delivers two of them. PDF is OQ-07; whether excerpts appear is OQ-17 (criteria assume they do not).
+"This week" is the 7 days up to and including today (assumption A-5). The five v1 sections are fixed by decision DEC-03; this story delivers two of them. Markdown only and no source excerpts in the summary, by decision DEC-21.

@@ -24,7 +24,7 @@ The manager misses about one item in five when writing notes up from memory (NEE
 - Its allowed tools are limited to reading the notes file and writing `pending.json` (DEC-19, REQ-042).
 - Output must satisfy the contract; the CLI rejects anything else (ADR-004).
 - Repeated items once, year rule, source-date rule (DEC-07, DEC-08).
-- No extraction quality threshold is set for v1; found and missed items are reported against the answer key in stage 5 (OQ-18).
+- No extraction pass threshold in v1; found and missed items are reported against the answer key in stage 5 (DEC-21).
 
 ## Non-goals
 

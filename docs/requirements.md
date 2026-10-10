@@ -32,8 +32,8 @@
 | C-1 | The audit trail must say *who* made each change, but v1 has no logins or users | Tom, Priya vs brief Non-goals | Resolved: DEC-02 |
 | C-2 | The project manager updates her own items, but the log is one local file with no multi-user support | Brief Users vs brief Non-goals and Stack | Resolved: DEC-13 |
 | C-3 | Summary content: Sean wants four sections, Tom wants three different answers, and Tom wants one page maximum | Sean vs Tom | Resolved: DEC-03, DEC-04 |
-| C-4 | Summary format: the brief says markdown, Tom would ideally like PDF | Brief vs Tom | OQ-07 |
-| C-5 | Assumptions: the brief asks about a validation *date*, Sean asks for a "how do we check this" *note* | Brief vs Sean | OQ-02 |
+| C-4 | Summary format: the brief says markdown, Tom would ideally like PDF | Brief vs Tom | Resolved: DEC-21 |
+| C-5 | Assumptions: the brief asks about a validation *date*, Sean asks for a "how do we check this" *note* | Brief vs Sean | Resolved: DEC-21 |
 | C-6 | Tom believes using the team's AI assistant on Acme notes is covered by contract, but says "check with Legal" | Tom vs brief Constraints | OQ-08 |
 
 ## 2. Functional requirements
@@ -77,7 +77,7 @@ Priority is MoSCoW: M = must, S = should, C = could. "Log" means the project's `
 | REQ-018 | require a reason when an item is closed, and record the closed date *(interview)* | S | NEED-12, NEED-15 | Given open item I-001, when closed without a reason, then it is refused and the status stays Open. When closed with a reason on 2026-10-10, then status is Closed, closed date is 2026-10-10 and the reason is stored. A Closed item can be reopened only with a reason; reopening sets the status to Open and is recorded in its history (DEC-15). |
 | REQ-019 | provide no way to delete an item from the log *(interview)* | S | NEED-12 | The CLI has no delete command. After R-001 is closed and a proposal is merged into R-002, R-001 and R-002 are both still listed with their full history. |
 | REQ-020 | record a history entry for an item's creation and for every later change: timestamp, user name, field, old value, new value *(interview)* | S | NEED-12 | Given R-001 created and then its owner changed from empty to "Priya Nair", then its history has 2 entries, the second showing field `owner`, old value empty, new value "Priya Nair", a timestamp, and the stored user name "Sean Murphy" (DEC-02). |
-| REQ-021 | hold a "how we will check this" note on Assumption items *(interview)* | S | NEED-09 | Given an Assumption proposal, when accepted with the note "Confirm with Acme DBA by cutover rehearsal", then A-001 shows that note. (Whether the note is mandatory is OQ-02.) |
+| REQ-021 | hold a "how we will check this" note on Assumption items *(interview)* | S | NEED-09 | Given an Assumption proposal, when accepted with the note "Confirm with Acme DBA by cutover rehearsal", then A-001 shows that note. An Assumption cannot be accepted or added without the note. A validation date can be recorded with it and is optional (DEC-21). |
 | REQ-022 | hold a "waiting on" party on Dependency items *(interview)* | S | NEED-09 | Given a Dependency proposal, when accepted with waiting-on "Acme security team", then D-001 shows that party. |
 | REQ-034 | show one item in full: all its fields, its source excerpt and date, and its history | M | NEED-07, NEED-12 | Given R-001 accepted from the excerpt "Tom said the client security review for the new cloud tenant hasn't started" and later given owner "Priya Nair", when R-001 is viewed, then the output shows its fields, that excerpt, its source date and both history entries. Given a log with no R-099, when R-099 is viewed, then the exit code is non-zero and the message says R-099 does not exist. |
 | REQ-035 | ask the user for their name the first time it is needed and keep it in a local configuration file | S | NEED-12 | Given no stored name, when a command that changes the log runs, then the user is asked for a name once and it is saved. Given the stored name "Sean Murphy", when another such command runs, then no name is asked for. |
@@ -89,7 +89,7 @@ Priority is MoSCoW: M = must, S = should, C = could. "Log" means the project's `
 | ID | The system shall… | Pri | Source | Acceptance criteria |
 |---|---|---|---|---|
 | REQ-023 | show, during review, any existing log items that are likely duplicates of the proposal | M | NEED-04 | Given a log holding R-001 titled "Test environment delivered late", when a proposal with the same title ignoring case and spacing is reviewed, then R-001 is shown as a likely duplicate. Rule (DEC-01, A-10): a log item is a likely duplicate when it has the same type as the proposal and either the titles are identical ignoring case, spacing and punctuation, or the titles share at least 2 key words that make up at least half of the shorter title's key words. Given R-001 "Client security review may delay cutover": a Risk proposal "Security review delay raised again" (3 of 5 key words shared) shows R-001; a Risk proposal "Key analyst on leave in November" (0 shared) shows nothing; an Issue proposal "Client security review may delay cutover" shows nothing (different type). A Closed item is offered as a likely duplicate in the same way as an open one; adding an item by hand does not run this check (DEC-17). |
-| REQ-024 | offer to merge a proposal into a likely duplicate instead of adding it as a new item | M | NEED-04 | Given R-001 shown as a likely duplicate, when the manager chooses merge, then no new ID is created, R-001 gains the proposal's source excerpt and date, and R-001's history records the merge. When the manager chooses keep separate, then a new ID is created. On merge, the existing item's title, owner, severity and due date are left as they were (DEC-15). |
+| REQ-024 | offer to merge a proposal into a likely duplicate instead of adding it as a new item | M | NEED-04 | Given R-001 shown as a likely duplicate, when the manager chooses merge, then no new ID is created, R-001 gains the proposal's source excerpt and date, and R-001's history records the merge. When the manager chooses keep separate, then a new ID is created. On merge, the existing item's title, owner, severity and due date are left as they were (DEC-15). If the existing item is Closed, the review says before the manager confirms that the merge will reopen it; on confirming, the item returns to Open and its history records the reopening with the reason "reopened by merge of a new proposal", the date and the user's name; on declining, nothing changes (DEC-22). |
 
 ### Flags
 
@@ -162,7 +162,7 @@ The v1 sections are fixed by DEC-03: top risks, new this week, overdue, decision
 | A-11 | "Age" means the date the item was created, oldest first. When items are dropped to meet 400 words, the lowest-ranked item across all sections goes first (lowest severity, then newest); between equals, the one in the section currently showing the most items. Words are counted as whitespace-separated tokens | REQ-038, NFR-009 |
 | A-8 | "Source date" means the date of the notes the item came from, not the date it was accepted | REQ-012 |
 
-### Decisions (answers received 2026-10-10, in five rounds)
+### Decisions (answers received 2026-10-10, in seven rounds)
 
 | ID | Question | Decision | Not chosen | Changed |
 |---|---|---|---|---|
@@ -185,18 +185,16 @@ The v1 sections are fixed by DEC-03: top risks, new this week, overdue, decision
 | DEC-17 | Stage 2 findings T-04 and T-05, duplicates | A Closed item can be offered as a likely duplicate. `raid add` does not run the duplicate check | Hiding Closed items from the check; checking on add | REQ-023 |
 | DEC-18 | OQ-01 severity scale | High, Medium, Low | Probability x impact | REQ-003, REQ-031 |
 | DEC-19 | Stage 3 finding N-04, extraction permissions | The `/raid-extract` command's allowed tools are limited to reading the notes file and writing `pending.json` | Relying on the prompt alone | REQ-042 |
+| DEC-20 | Stage 4 finding P-01 | The ten spec-level choices SA-1 to SA-10, listed in `docs/reviews/stage-4-review.md`, are accepted as written | — | Specs |
+| DEC-21 | OQ-02, OQ-07, OQ-16, OQ-17, OQ-18 | Proposed defaults accepted. The check note is mandatory for an Assumption and a validation date is optional. Markdown only. The same three statuses for all four types. No source excerpts in the summary. No extraction pass threshold in v1; found and missed items are reported against the answer key in stage 5 | A mandatory validation date; PDF; type-specific statuses; excerpts in the summary; a pass threshold | REQ-021; specs EPIC-2-05, 2-04, 2-03, 4-01, 1-05 |
+| DEC-22 | Stage 3 finding N-14, merge into a Closed item | Merging a proposal into a Closed item reopens it. The review prompt says so before the manager confirms; the item returns to Open; the history records the reopening with the reason "reopened by merge of a new proposal", the date and the user's name | Leaving the item Closed (former limitation L-8) | REQ-024; story and spec EPIC-3-04 |
 
 ### Open questions for you
 
 | ID | Question | Proposed default (not applied until you confirm) | Blocks |
 |---|---|---|---|
-| OQ-02 | Should Assumptions have a validation date? (from the brief) And is Sean's "how do we check this" note mandatory? | Note mandatory on accept, validation date optional | REQ-021 |
-| OQ-07 | Is PDF output needed, or is markdown enough? (C-4) | Markdown only, as the brief says | REQ-028 |
 | OQ-08 | Has Acme (and Legal) confirmed that notes may be processed in the team's Claude Code session? (C-6) | No tool change. This is your sign-off before any real client notes are used | Release decision |
 | OQ-11 | Any performance expectation, and how many items should a log be able to hold? | Each command finishes within 2 seconds on a log of 500 items | NFR-001 |
-| OQ-16 | Does "Mitigating" apply to Assumptions and Dependencies, or do they need different statuses? | Same three statuses for all four types | REQ-017 |
-| OQ-17 | Should the summary show source excerpts? They may contain names and sensitive figures | No excerpts in the summary | REQ-028 |
-| OQ-18 | Is there an extraction quality target (how many real items it must find)? Sean's own miss rate is about 1 in 5 | No pass threshold in v1; report found and missed items against the answer key in stage 5 | REQ-001 |
 | OQ-19 | Priorities marked *(interview)* are proposed as Should, and so is adding by hand (REQ-013, named only in the brief's Stack). Do any need to be Must (for example history, given Acme's PMO requires it)? | Keep as Should | REQ-013, REQ-015 to REQ-022, REQ-029 to REQ-033, REQ-035 to REQ-038 |
 
 ## 5. Out of scope (copied from the brief)

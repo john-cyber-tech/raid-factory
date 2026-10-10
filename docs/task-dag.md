@@ -26,21 +26,21 @@ The six HIGH tasks therefore each stop twice: SPEC-EPIC-1-01, SPEC-EPIC-5-01, SP
 | 6 | SPEC-EPIC-1-02 Reject invalid extraction output | HIGH | tests, then code | EPIC-1-01 | 2 | — |
 | 7 | SPEC-EPIC-1-03 Edit a proposal before accepting it | MEDIUM | diff | EPIC-1-01, EPIC-1-02 | 3 | — |
 | 8 | SPEC-EPIC-1-04 Keep the source excerpt and date with every item | MEDIUM | diff | EPIC-1-01 | 2 | — |
-| 9 | SPEC-EPIC-1-05 `/raid-extract` writes proposals from a notes file | HIGH | tests, then code | EPIC-1-02, EPIC-1-04 | 3 | OQ-18 |
+| 9 | SPEC-EPIC-1-05 `/raid-extract` writes proposals from a notes file | HIGH | tests, then code | EPIC-1-02, EPIC-1-04 | 3 | — |
 | 10 | SPEC-EPIC-1-06 Extraction ignores instructions hidden in notes | HIGH | tests, then code | EPIC-1-05 | 4 | — |
 | 11 | SPEC-EPIC-2-06 View one item in full | LOW | none | EPIC-1-04, EPIC-5-02 | 4 | — |
 | 12 | SPEC-EPIC-2-02 Update an item | LOW | none | EPIC-5-02 | 4 | — |
 | 13 | SPEC-EPIC-2-01 List only my items | LOW | none | EPIC-1-01 | 2 | — |
-| 14 | SPEC-EPIC-2-03 Status, and closing an item with a reason | MEDIUM | diff | EPIC-2-02, EPIC-2-06 | 5 | OQ-16 |
-| 15 | SPEC-EPIC-2-05 Check note on assumptions, waiting-on party on dependencies | MEDIUM | diff | EPIC-1-03, EPIC-2-02, EPIC-2-06 | 5 | OQ-02 |
+| 14 | SPEC-EPIC-2-03 Status, and closing an item with a reason | MEDIUM | diff | EPIC-2-02, EPIC-2-06 | 5 | — |
+| 15 | SPEC-EPIC-2-05 Check note on assumptions, waiting-on party on dependencies | MEDIUM | diff | EPIC-1-03, EPIC-2-02, EPIC-2-06 | 5 | — |
 | 16 | SPEC-EPIC-2-04 Add an item by hand | MEDIUM | diff | EPIC-1-04, EPIC-5-02, EPIC-2-06 | 5 | — |
 | 17 | SPEC-EPIC-2-07 Mark an item as needing a decision | LOW | none | EPIC-2-02, EPIC-2-06 | 5 | — |
 | 18 | SPEC-EPIC-3-01 Flag unowned and overdue items | LOW | none | EPIC-2-03 | 6 | — |
 | 19 | SPEC-EPIC-3-02 Flag stale items | LOW | none | EPIC-3-01, EPIC-5-02 | 7 | — |
 | 20 | SPEC-EPIC-3-03 Show likely duplicates during review | MEDIUM | diff | EPIC-1-03 | 4 | — |
-| 21 | SPEC-EPIC-3-04 Merge a proposal into an existing item | MEDIUM | diff | EPIC-3-03, EPIC-5-02 | 5 | — |
-| 22 | SPEC-EPIC-5-03 Items are never deleted | LOW | none | EPIC-2-03, EPIC-3-04 | 6 | — |
-| 23 | SPEC-EPIC-4-01 Generate the weekly summary with new and overdue items | MEDIUM | diff | EPIC-3-01, EPIC-5-02 | 7 | OQ-07, OQ-17 |
+| 21 | SPEC-EPIC-3-04 Merge a proposal into an existing item | MEDIUM | diff | EPIC-3-03, EPIC-5-02, EPIC-2-03 | 6 | — |
+| 22 | SPEC-EPIC-5-03 Items are never deleted | LOW | none | EPIC-2-03, EPIC-3-04 | 7 | — |
+| 23 | SPEC-EPIC-4-01 Generate the weekly summary with new and overdue items | MEDIUM | diff | EPIC-3-01, EPIC-5-02 | 7 | — |
 | 24 | SPEC-EPIC-4-02 Summary shows top risks, what is blocked by whom, and decisions needed | LOW | none | EPIC-4-01, EPIC-2-05, EPIC-2-07 | 8 | — |
 | 25 | SPEC-EPIC-4-03 Summary shows owners and never exceeds 400 words | MEDIUM | diff | EPIC-4-02 | 9 | — |
 
@@ -54,9 +54,9 @@ A wave is a set of tasks whose dependencies are all in earlier waves, so tasks i
 | 2 | EPIC-5-01, EPIC-5-04, EPIC-5-05, EPIC-1-02, EPIC-1-04, EPIC-2-01 |
 | 3 | EPIC-5-02, EPIC-1-03, EPIC-1-05 |
 | 4 | EPIC-1-06, EPIC-2-06, EPIC-2-02, EPIC-3-03 |
-| 5 | EPIC-2-03, EPIC-2-05, EPIC-2-04, EPIC-2-07, EPIC-3-04 |
-| 6 | EPIC-3-01, EPIC-5-03 |
-| 7 | EPIC-3-02, EPIC-4-01 |
+| 5 | EPIC-2-03, EPIC-2-05, EPIC-2-04, EPIC-2-07 |
+| 6 | EPIC-3-01, EPIC-3-04 |
+| 7 | EPIC-3-02, EPIC-5-03, EPIC-4-01 |
 | 8 | EPIC-4-02 |
 | 9 | EPIC-4-03 |
 
@@ -130,6 +130,7 @@ flowchart TD
     EPIC_1_03 --> EPIC_3_03
     EPIC_3_03 --> EPIC_3_04
     EPIC_5_02 --> EPIC_3_04
+    EPIC_2_03 --> EPIC_3_04
     EPIC_2_03 --> EPIC_5_03
     EPIC_3_04 --> EPIC_5_03
     EPIC_3_01 --> EPIC_4_01

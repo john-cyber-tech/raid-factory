@@ -1,7 +1,7 @@
 # SPEC-EPIC-2-03 — Status, and closing an item with a reason
 
 **Story:** EPIC-2-03 · **Covers:** REQ-016, REQ-017, REQ-018 · **Components:** COMP-03, COMP-05
-**Build order:** 14 of 25 · **Risk tier:** MEDIUM (One open question (OQ-16) and the rule that makes "closed" trustworthy.) · **Depends on:** SPEC-EPIC-2-02, SPEC-EPIC-2-06
+**Build order:** 14 of 25 · **Risk tier:** MEDIUM (The rule that makes "closed" trustworthy.) · **Depends on:** SPEC-EPIC-2-02, SPEC-EPIC-2-06
 
 ## Why
 
@@ -22,7 +22,7 @@ As a project manager, I want each item to have a status and to give a reason whe
 - Three statuses, new items Open (REQ-017).
 - Closing needs a reason and records the date (REQ-018).
 - A Closed item can be reopened only with a reason (DEC-15).
-- The same three statuses apply to all four types until OQ-16 is answered (OQ-16).
+- The same three statuses apply to all four types (DEC-21).
 - Closed items stay in the log (REQ-019, ADR-001).
 
 ## Non-goals
