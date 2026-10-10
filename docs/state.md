@@ -1,8 +1,8 @@
 # Factory state
 | Stage | Status | Approved on |
 |---|---|---|
-| 1 Requirements | NOT STARTED | |
-| 2 Stories | NOT STARTED | |
+| 1 Requirements | APPROVED | 2026-10-10 |
+| 2 Stories | APPROVED | 2026-10-10 |
 | 3 Architecture | NOT STARTED | |
 | 4 Specs | NOT STARTED | |
 | 5 Build | NOT STARTED | |
