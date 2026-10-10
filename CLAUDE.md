@@ -17,7 +17,7 @@ AI Factory notes in `reference/epam/` (read only the sections a stage names).
 ## Layout
 - `inputs/brief.md` — the project brief (source of truth). `inputs/sample-meeting-notes.md` — test data.
 - `docs/` — stage outputs. `docs/state.md` — stage status and approvals.
-- `src/`, `tests/` — the built tool (Python 3.12, pytest). No network calls, no API key.
+- `src/`, `tests/` — the built tool (Python 3.12 or later, pytest). No network calls, no API key.
 - `reference/epam/` — EPAM AI Factory role notes (100–1000).
 
 ## Product design note

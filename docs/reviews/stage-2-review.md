@@ -77,3 +77,7 @@ None.
 | R-14 | EPIC-2-01, EPIC-2-02, OQ-04 | How the project manager reaches a single-user local file is unanswered | Answer OQ-04 before stage 3 |
 
 Questions still open in `docs/requirements.md` that affect a story but not its readiness: OQ-02, OQ-07, OQ-13 to OQ-18. Each is named in the story it touches.
+
+## Amendment after approval (2026-10-10, during stage 3)
+
+Decisions DEC-10 to DEC-19 added eight criteria: one each to EPIC-1-01, EPIC-1-06, EPIC-2-02, EPIC-2-04, EPIC-3-03 and EPIC-3-04, and two to EPIC-2-03. REQ-042 was added and is covered by EPIC-1-06. There are now 42 requirements and 123 criteria. Coverage, order and criterion form were re-checked by script with no problems. Findings T-03, T-04, T-05, R-07 and R-14 are closed by ADR-005 and decisions DEC-13, DEC-17 and DEC-18.

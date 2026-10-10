@@ -3,7 +3,7 @@
 |---|---|---|
 | 1 Requirements | APPROVED | 2026-10-10 |
 | 2 Stories | APPROVED | 2026-10-10 |
-| 3 Architecture | NOT STARTED | |
+| 3 Architecture | APPROVED | 2026-10-10 |
 | 4 Specs | NOT STARTED | |
 | 5 Build | NOT STARTED | |
 | 6 Release | NOT STARTED | |

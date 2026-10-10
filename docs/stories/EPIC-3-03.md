@@ -12,8 +12,9 @@
 3. Given the same log, when a Risk proposal titled "Key analyst on leave in November" is reviewed, then no likely duplicate is shown.
 4. Given the same log, when an Issue proposal titled "Client security review may delay cutover" is reviewed, then no likely duplicate is shown, because the type differs.
 5. Given that Issue proposal, when I edit its type to Risk during review, then R-001 is now shown as a likely duplicate.
-6. Given a proposal with a likely duplicate shown, then I am still asked for my own decision and nothing is merged automatically.
+6. Given a log holding Closed R-001 "Client security review may delay cutover", when a Risk proposal with the same title is reviewed, then R-001 is shown as a likely duplicate and marked as Closed.
+7. Given a proposal with a likely duplicate shown, then I am still asked for my own decision and nothing is merged automatically.
 
 ## Notes
 
-Rule from decision DEC-01, stated in REQ-023: same type, and either identical titles ignoring case, spacing and punctuation, or at least 2 shared key words making up at least half of the shorter title's key words. The threshold is assumption A-10 and is tuned on the test notes in stage 5.
+Rule from decision DEC-01, stated in REQ-023: same type, and either identical titles ignoring case, spacing and punctuation, or at least 2 shared key words making up at least half of the shorter title's key words. The threshold is assumption A-10 and is tuned on the test notes in stage 5. Offering Closed items is decision DEC-17.

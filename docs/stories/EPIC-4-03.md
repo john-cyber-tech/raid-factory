@@ -1,7 +1,7 @@
 # EPIC-4-03 — Summary shows owners and never exceeds 400 words
 
 **Epic:** EPIC-4 Weekly summary · **Covers:** REQ-033, REQ-038, NFR-009 · **Size:** M · **Build order:** 25 of 25
-**Depends on:** EPIC-4-02 · **Open questions:** OQ-01
+**Depends on:** EPIC-4-02 · **Open questions:** none
 
 **Story:** As a client sponsor, I want every item to show who owns it in a summary that always fits one page on my phone, so that I can see who is doing what without scrolling or asking.
 
@@ -18,4 +18,4 @@
 
 ## Notes
 
-Decision DEC-09: 400 words is the hard limit; sections show at most 5 items ranked by severity then age; if still over, the lowest-ranked items are dropped. The 80-character title limit that makes the worst case bounded is REQ-041 (EPIC-1-02, EPIC-2-02, EPIC-2-04). "Age" as oldest-created-first, the order in which items are dropped across sections, and the word-count method are assumption A-11. Severity ranking assumes High/Medium/Low (OQ-01). Raised from S to M: the trimming rule is the hardest logic in this epic.
+Decision DEC-09: 400 words is the hard limit; sections show at most 5 items ranked by severity then age; if still over, the lowest-ranked items are dropped. The 80-character title limit that makes the worst case bounded is REQ-041 (EPIC-1-02, EPIC-2-02, EPIC-2-04). "Age" as oldest-created-first, the order in which items are dropped across sections, and the word-count method are assumption A-11. Severity ranking uses High/Medium/Low (DEC-18). Raised from S to M: the trimming rule is the hardest logic in this epic.

@@ -1,7 +1,7 @@
 # EPIC-1-03 — Edit a proposal before accepting it
 
 **Epic:** EPIC-1 Extraction and review · **Covers:** REQ-009, REQ-041 · **Size:** S · **Build order:** 7 of 25
-**Depends on:** EPIC-1-01, EPIC-1-02 · **Open questions:** OQ-01
+**Depends on:** EPIC-1-01, EPIC-1-02 · **Open questions:** none
 
 **Story:** As a delivery manager, I want to correct a proposal during review, so that what enters the log is right the first time.
 
@@ -14,4 +14,4 @@
 
 ## Notes
 
-Which severity values an edit may set depends on OQ-01.
+Severity is High, Medium or Low (decision DEC-18).

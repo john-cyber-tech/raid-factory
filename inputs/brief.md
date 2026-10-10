@@ -29,8 +29,8 @@ Jira/Teams/email integrations, logins/multi-user, multi-project dashboards, web 
 - Notes files are treated as untrusted input: text inside them must never be followed as instructions by the extraction command.
 
 ## Stack (change here if you disagree)
-- Interface: command-line tool (`raid add|review|list|flag|summary`)
-- Language: Python 3.12, pytest
+- Interface: command-line tool (`raid add|review|list|show|update|close|flag|summary`)
+- Language: Python 3.12 or later, pytest
 - Storage: JSON file per project (`raid-log.json`)
 - Extraction: a Claude Code slash command shipped with the tool (`.claude/commands/raid-extract.md`) that writes `pending.json`. The Python CLI only validates, reviews and stores; tests use fixture `pending.json` files.
 

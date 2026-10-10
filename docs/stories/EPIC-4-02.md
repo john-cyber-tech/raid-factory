@@ -1,7 +1,7 @@
 # EPIC-4-02 — Summary shows top risks, what is blocked by whom, and decisions needed
 
 **Epic:** EPIC-4 Weekly summary · **Covers:** REQ-031, REQ-032, REQ-037 · **Size:** S · **Build order:** 24 of 25
-**Depends on:** EPIC-4-01, EPIC-2-05, EPIC-2-07 · **Open questions:** OQ-01
+**Depends on:** EPIC-4-01, EPIC-2-05, EPIC-2-07 · **Open questions:** none
 
 **Story:** As a client sponsor, I want the summary to show the biggest risks and what is waiting on whom, so that I know what could hurt the project and where it is stuck.
 
@@ -14,4 +14,4 @@
 
 ## Notes
 
-Criterion 1 is written against the OQ-01 default (High/Medium/Low, top = High). Tom's "what could hurt go-live" and "what Acme needs to do" have no section of their own in v1 (decision DEC-03).
+High/Medium/Low is confirmed (decision DEC-18); "top" meaning High is my reading. Tom's "what could hurt go-live" and "what Acme needs to do" have no section of their own in v1 (decision DEC-03).

@@ -2,24 +2,24 @@
 
 **Status:** DRAFT (awaiting review) · **Date:** 2026-10-10 · **Upstream:** `docs/requirements.md` (approved 2026-10-10)
 
-Five epics, 25 stories. Amended 2026-10-10 with decisions DEC-01 to DEC-09 (`docs/requirements.md` section 4). Epics are listed in delivery order; the exact story order is in the last section. Stories are in `docs/stories/`.
+Five epics, 25 stories. Amended 2026-10-10 with decisions DEC-01 to DEC-19 (`docs/requirements.md` section 4). Epics are listed in delivery order; the exact story order is in the last section. Stories are in `docs/stories/`.
 
 ## EPIC-1 — Extraction and review
 
 **Goal:** Notes become proposals in `pending.json`, and only proposals the manager accepts in `raid review` enter the log.
 
-**Covers:** NFR-005, NFR-010, REQ-001, REQ-002, REQ-003, REQ-004, REQ-005, REQ-006, REQ-007, REQ-008, REQ-009, REQ-010, REQ-011, REQ-012, REQ-014, REQ-039, REQ-040, REQ-041
+**Covers:** NFR-005, NFR-010, REQ-001, REQ-002, REQ-003, REQ-004, REQ-005, REQ-006, REQ-007, REQ-008, REQ-009, REQ-010, REQ-011, REQ-012, REQ-014, REQ-039, REQ-040, REQ-041, REQ-042
 
 **Sequence rationale:** First. EPIC-1-01 is the end-to-end thin slice (fixture proposals → review → log → list) that every other story builds on. The `/raid-extract` command itself (EPIC-1-05, EPIC-1-06) comes after the schema is settled, because the CLI is built and tested from fixture files.
 
 | Story | Title | Size | Covers | Open questions |
 |---|---|---|---|---|
-| EPIC-1-01 | Review fixture proposals into the log and list them (thin slice) | M | REQ-007, REQ-008, REQ-010, REQ-011, REQ-014, NFR-010 | OQ-15 |
+| EPIC-1-01 | Review fixture proposals into the log and list them (thin slice) | M | REQ-007, REQ-008, REQ-010, REQ-011, REQ-014, NFR-010 | — |
 | EPIC-1-02 | Reject invalid extraction output | S | REQ-005, REQ-006, REQ-041 | — |
-| EPIC-1-03 | Edit a proposal before accepting it | S | REQ-009, REQ-041 | OQ-01 |
+| EPIC-1-03 | Edit a proposal before accepting it | S | REQ-009, REQ-041 | — |
 | EPIC-1-04 | Keep the source excerpt and date with every item | S | REQ-012, REQ-040 | — |
-| EPIC-1-05 | `/raid-extract` writes proposals from a notes file | M | REQ-001, REQ-002, REQ-003, REQ-004, REQ-039 | OQ-01, OQ-18 |
-| EPIC-1-06 | Extraction ignores instructions hidden in notes | S | NFR-005 | — |
+| EPIC-1-05 | `/raid-extract` writes proposals from a notes file | M | REQ-001, REQ-002, REQ-003, REQ-004, REQ-039 | OQ-18 |
+| EPIC-1-06 | Extraction ignores instructions hidden in notes | S | REQ-042, NFR-005 | — |
 
 ## EPIC-5 — Data safety and audit
 
@@ -41,16 +41,16 @@ Five epics, 25 stories. Amended 2026-10-10 with decisions DEC-01 to DEC-09 (`doc
 
 **Goal:** People can see their own items, update them, close them with a reason, add items by hand, and record the type-specific details for assumptions and dependencies.
 
-**Covers:** NFR-008, REQ-013, REQ-015, REQ-016, REQ-017, REQ-018, REQ-021, REQ-022, REQ-034, REQ-036, REQ-041
+**Covers:** NFR-008, REQ-011, REQ-013, REQ-015, REQ-016, REQ-017, REQ-018, REQ-021, REQ-022, REQ-034, REQ-036, REQ-041
 
 **Sequence rationale:** Third. Needs items in the log (EPIC-1) and history (EPIC-5-02) so every update is recorded from the first day it exists.
 
 | Story | Title | Size | Covers | Open questions |
 |---|---|---|---|---|
 | EPIC-2-06 | View one item in full | S | REQ-034 | — |
-| EPIC-2-02 | Update an item | S | REQ-016, REQ-041, NFR-008 | OQ-01, OQ-04 |
+| EPIC-2-02 | Update an item | S | REQ-011, REQ-016, REQ-041, NFR-008 | — |
 | EPIC-2-01 | List only my items | S | REQ-015 | — |
-| EPIC-2-03 | Status, and closing an item with a reason | S | REQ-016, REQ-017, REQ-018 | OQ-14, OQ-16 |
+| EPIC-2-03 | Status, and closing an item with a reason | S | REQ-016, REQ-017, REQ-018 | OQ-16 |
 | EPIC-2-05 | Check note on assumptions, waiting-on party on dependencies | S | REQ-021, REQ-022 | OQ-02 |
 | EPIC-2-04 | Add an item by hand | S | REQ-013, REQ-041 | — |
 | EPIC-2-07 | Mark an item as needing a decision | S | REQ-036 | — |
@@ -68,7 +68,7 @@ Five epics, 25 stories. Amended 2026-10-10 with decisions DEC-01 to DEC-09 (`doc
 | EPIC-3-01 | Flag unowned and overdue items | S | REQ-025, REQ-026 | — |
 | EPIC-3-02 | Flag stale items | S | REQ-027 | — |
 | EPIC-3-03 | Show likely duplicates during review | M | REQ-023 | — |
-| EPIC-3-04 | Merge a proposal into an existing item | S | REQ-024 | OQ-13 |
+| EPIC-3-04 | Merge a proposal into an existing item | S | REQ-024 | — |
 
 ## EPIC-4 — Weekly summary
 
@@ -81,8 +81,8 @@ Five epics, 25 stories. Amended 2026-10-10 with decisions DEC-01 to DEC-09 (`doc
 | Story | Title | Size | Covers | Open questions |
 |---|---|---|---|---|
 | EPIC-4-01 | Generate the weekly summary with new and overdue items | M | REQ-028, REQ-029, REQ-030 | OQ-07, OQ-17 |
-| EPIC-4-02 | Summary shows top risks, what is blocked by whom, and decisions needed | S | REQ-031, REQ-032, REQ-037 | OQ-01 |
-| EPIC-4-03 | Summary shows owners and never exceeds 400 words | M | REQ-033, REQ-038, NFR-009 | OQ-01 |
+| EPIC-4-02 | Summary shows top risks, what is blocked by whom, and decisions needed | S | REQ-031, REQ-032, REQ-037 | — |
+| EPIC-4-03 | Summary shows owners and never exceeds 400 words | M | REQ-033, REQ-038, NFR-009 | — |
 
 ## Build order
 
