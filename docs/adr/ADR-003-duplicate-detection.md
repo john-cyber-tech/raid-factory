@@ -1,6 +1,6 @@
 # ADR-003: Duplicates are found by a fixed key-word rule in the CLI
 
-**Status:** Proposed (becomes Accepted when stage 3 is approved)
+**Status:** Accepted (2026-10-10, with the approval of stage 3)
 **Owner:** Project owner · **Date:** 2026-10-10
 **Driven by:** REQ-023, REQ-024, NFR-004, NFR-010; DEC-01; NEED-04
 **Review trigger:** stage 5 tuning on the test notes shows the rule misses too many real duplicates or raises too many false ones.

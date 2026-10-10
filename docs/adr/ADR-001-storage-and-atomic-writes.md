@@ -1,6 +1,6 @@
 # ADR-001: One JSON file per project, saved by write-then-replace
 
-**Status:** Proposed (becomes Accepted when stage 3 is approved)
+**Status:** Accepted (2026-10-10, with the approval of stage 3)
 **Owner:** Project owner · **Date:** 2026-10-10
 **Driven by:** NFR-002, NFR-003, NFR-006, REQ-010, REQ-011, REQ-019; brief (Stack: "JSON file per project")
 **Review trigger:** a log is expected to exceed a few thousand items (OQ-11), or a later version must let more than one person write to the same log.

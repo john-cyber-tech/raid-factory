@@ -1,6 +1,6 @@
 # ADR-002: Extraction is a Claude Code command; the CLI only validates its output
 
-**Status:** Proposed (becomes Accepted when stage 3 is approved)
+**Status:** Accepted (2026-10-10, with the approval of stage 3)
 **Owner:** Project owner · **Date:** 2026-10-10
 **Driven by:** NFR-004, NFR-005, NFR-006, REQ-001, REQ-002, REQ-005, REQ-006, REQ-007, REQ-008, REQ-042; NEED-02, NEED-06; `CLAUDE.md` product design note
 **Review trigger:** the client approves a different AI service, or the team wants extraction to run unattended.

@@ -1,6 +1,6 @@
 # ADR-006: Each item carries its own append-only history, inside the log file
 
-**Status:** Proposed (becomes Accepted when stage 3 is approved)
+**Status:** Accepted (2026-10-10, with the approval of stage 3)
 **Owner:** Project owner · **Date:** 2026-10-10
 **Driven by:** REQ-020, REQ-019, REQ-027, REQ-029, REQ-034, NFR-007, NFR-002; NEED-12
 **Review trigger:** the client's PMO asks for history that cannot be altered even by editing the file.

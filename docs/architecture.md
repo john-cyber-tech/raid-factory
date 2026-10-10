@@ -2,7 +2,7 @@
 
 **Status:** DRAFT (awaiting review), revised with decisions DEC-10 to DEC-19 · **Date:** 2026-10-10
 **Upstream:** `docs/requirements.md` (42 REQs, 10 NFRs, DEC-01 to DEC-19), `docs/epics.md`, `docs/stories/`
-**Decisions:** `docs/adr/ADR-001` to `ADR-006`, all Proposed until you approve this stage.
+**Decisions:** `docs/adr/ADR-001` to `ADR-006`, all Accepted on 2026-10-10.
 
 ## 1. Shape
 

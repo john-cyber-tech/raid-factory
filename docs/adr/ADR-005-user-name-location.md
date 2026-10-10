@@ -1,6 +1,6 @@
 # ADR-005: The user's name is kept in a file inside the project folder
 
-**Status:** Proposed (becomes Accepted when stage 3 is approved)
+**Status:** Accepted (2026-10-10, with the approval of stage 3)
 **Owner:** Project owner · **Date:** 2026-10-10
 **Driven by:** REQ-035, REQ-020, NFR-006; DEC-02; stage 2 finding T-03
 **Review trigger:** a later version lets two people work in the same project folder. v1 is single-user by decision (DEC-13).

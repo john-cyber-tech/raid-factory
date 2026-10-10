@@ -4,7 +4,7 @@
 | 1 Requirements | APPROVED | 2026-10-10 |
 | 2 Stories | APPROVED | 2026-10-10 |
 | 3 Architecture | APPROVED | 2026-10-10 |
-| 4 Specs | NOT STARTED | |
+| 4 Specs | DRAFT | |
 | 5 Build | NOT STARTED | |
 | 6 Release | NOT STARTED | |
 

@@ -1,6 +1,6 @@
 # ADR-004: `pending.json` is defined by one JSON Schema file, checked with the `jsonschema` library
 
-**Status:** Proposed (becomes Accepted when stage 3 is approved)
+**Status:** Accepted (2026-10-10, with the approval of stage 3)
 **Owner:** Project owner · **Date:** 2026-10-10
 **Driven by:** REQ-005, REQ-006, REQ-041, NFR-004, NFR-005, NFR-010; brief ("the CLI validates `pending.json` against a schema")
 **Review trigger:** the tool must be installed on machines that cannot install any third-party Python package.
