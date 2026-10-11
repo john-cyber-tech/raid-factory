@@ -6,12 +6,13 @@ write, sync and replace calls with ones that raise.
 """
 import itertools
 import json
-import os
 
 import pytest
 
 from helpers import (
     ANOTHER_RISK,
+    fail_at,
+    run_expecting_failure,
     P2_TITLE,
     P3_TITLE,
     log_items,
@@ -23,10 +24,6 @@ from helpers import (
 )
 
 TEMP_NAME = "raid-log.json.tmp"
-
-
-class InjectedFailure(OSError):
-    """Stands in for a crash or disk error at one step of a save."""
 
 
 def risk(title):
@@ -41,46 +38,6 @@ def project_with_two_risks(tmp_path):
     assert code == 0
     assert sorted(log_items(folder)) == ["R-001", "R-002"]
     return folder
-
-
-def fail_at(monkeypatch, step):
-    """Make one step of the save raise. `pending` fails only the pending.json replace.
-
-    Returns a list that gains one entry each time the failure fires.
-    """
-    fired = []
-
-    def boom(*args, **kwargs):
-        fired.append(step)
-        raise InjectedFailure(f"injected failure at {step}")
-
-    if step == "write":
-        monkeypatch.setattr(os, "write", boom)
-    elif step == "sync":
-        monkeypatch.setattr(os, "fsync", boom)
-    elif step == "replace":
-        monkeypatch.setattr(os, "replace", boom)
-    elif step == "pending":
-        real_replace = os.replace
-
-        def replace_unless_pending(src, dst, *args, **kwargs):
-            if os.fspath(dst).endswith("pending.json"):
-                boom()
-            return real_replace(src, dst, *args, **kwargs)
-
-        monkeypatch.setattr(os, "replace", replace_unless_pending)
-    else:
-        raise ValueError(step)
-    return fired
-
-
-def run_expecting_failure(folder, *argv, answers=""):
-    """The command must not succeed: it either exits 1 or lets the failure out."""
-    try:
-        code, _ = run(folder, *argv, answers=answers)
-    except InjectedFailure:
-        return
-    assert code == 1
 
 
 def test_failure_before_replace_keeps_old_log(tmp_path, monkeypatch):

@@ -1,6 +1,7 @@
 """Shared test helpers: fixed date, fixture paths and a runner for the CLI."""
 import io
 import json
+import os
 import shutil
 from datetime import date
 from pathlib import Path
@@ -90,3 +91,47 @@ def reviewed_project(tmp_path, name="project"):
     code, _ = run(folder, "review", answers="a\nr\na\n")
     assert code == 0
     return folder
+
+
+class InjectedFailure(OSError):
+    """Stands in for a crash or disk error at one step of a save."""
+
+
+def fail_at(monkeypatch, step):
+    """Make one step of the save raise. `pending` fails only the pending.json replace.
+
+    Returns a list that gains one entry each time the failure fires.
+    """
+    fired = []
+
+    def boom(*args, **kwargs):
+        fired.append(step)
+        raise InjectedFailure(f"injected failure at {step}")
+
+    if step == "write":
+        monkeypatch.setattr(os, "write", boom)
+    elif step == "sync":
+        monkeypatch.setattr(os, "fsync", boom)
+    elif step == "replace":
+        monkeypatch.setattr(os, "replace", boom)
+    elif step == "pending":
+        real_replace = os.replace
+
+        def replace_unless_pending(src, dst, *args, **kwargs):
+            if os.fspath(dst).endswith("pending.json"):
+                boom()
+            return real_replace(src, dst, *args, **kwargs)
+
+        monkeypatch.setattr(os, "replace", replace_unless_pending)
+    else:
+        raise ValueError(step)
+    return fired
+
+
+def run_expecting_failure(folder, *argv, answers=""):
+    """The command must not succeed: it either exits 1 or lets the failure out."""
+    try:
+        code, _ = run(folder, *argv, answers=answers)
+    except InjectedFailure:
+        return
+    assert code == 1
