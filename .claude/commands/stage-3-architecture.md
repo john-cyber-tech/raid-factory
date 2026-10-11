@@ -4,7 +4,7 @@ description: Stage 3 — high-level architecture and ADRs
 # Stage 3 — Architecture
 Precondition: stage 2 APPROVED. Set stage 3 to DRAFT when done.
 
-**Knowledge:** `reference/epam/400_Architecture.md` (Blocks 2–4: solution structure, ADRs, enforceable NFRs). Optional skills: `solution-architecture-writer`, `adr-writer`, `architecture-vs-requirements-checker`.
+**Knowledge:** `reference/epam/s3-architecture.md` (solution structure, ADRs, enforceable NFRs). Optional skills: `solution-architecture-writer`, `adr-writer`, `architecture-vs-requirements-checker`.
 
 ## Produce
 1. `docs/architecture.md`: components (responsibility, interface, data owned), a Mermaid diagram, data flow for "paste notes → review → log → summary", NFR→component mapping table, and the stack from the brief. Keep it HLD only (no class diagrams). Expect roughly: `/raid-extract` Claude Code command (outside the Python app), pending.json contract + schema validator, CLI, Review flow, Log store (atomic JSON), Dedup, Flagger, Summary generator.

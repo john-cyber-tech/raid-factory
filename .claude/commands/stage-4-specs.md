@@ -4,7 +4,7 @@ description: Stage 4 — engineering specs per story plus build order
 # Stage 4 — Engineering specs and task order
 Precondition: stage 3 APPROVED. Set stage 4 to DRAFT when done.
 
-**Knowledge:** `reference/epam/500_Engineering.md` (Blocks 2–3, Anti-Patterns) and `reference/epam/600_Quality.md` (Blocks 1, 3, 4). Optional skills: `engineering-spec-writer`, `task-dag-builder`, `build-readiness-checker`.
+**Knowledge:** `reference/epam/s4-specs.md` (engineering blocks, anti-patterns, test strategy, test cases, test data). Optional skills: `engineering-spec-writer`, `task-dag-builder`, `build-readiness-checker`.
 
 ## Produce
 1. `docs/specs/SPEC-<story-id>.md` for every story, with: **Why** (story + REQ ids), **Capabilities** (what it must do, with file/module names from the architecture), **Constraints** (each cites an ADR/NFR id), **Non-goals**, **Success signal** (observable, testable), **Test plan** (named test cases incl. edge cases and failure paths; test data), **Definition of done**.

@@ -8,14 +8,14 @@
 5. After stage 6 you have a working CLI, tests, and a release note.
 
 ## Stages
-| # | Command | EPAM source | Output |
+| # | Command | Reference | Output |
 |---|---|---|---|
-| 1 | /stage-1-requirements | 200 Product/BA, 600 Quality (block 2) | docs/requirements.md |
-| 2 | /stage-2-stories | 200 Product/BA | docs/epics.md, docs/stories/ |
-| 3 | /stage-3-architecture | 400 Architecture | docs/architecture.md, docs/adr/ |
-| 4 | /stage-4-specs | 500 Engineering | docs/specs/, docs/task-dag.md |
-| 5 | /stage-5-build | 500 Engineering, 600 Quality | src/, tests/ |
-| 6 | /stage-6-release | 900 Security, 1000 Delivery | docs/threat-review.md, docs/release-note.md |
+| 1 | /stage-1-requirements | s1-requirements.md | docs/requirements.md |
+| 2 | /stage-2-stories | s1-requirements.md, s2-stories.md | docs/epics.md, docs/stories/ |
+| 3 | /stage-3-architecture | s3-architecture.md | docs/architecture.md, docs/adr/ |
+| 4 | /stage-4-specs | s4-specs.md | docs/specs/, docs/task-dag.md |
+| 5 | /stage-5-build | s4-specs.md, s5-build.md | src/, tests/ |
+| 6 | /stage-6-release | s6-release.md | docs/threat-review.md, docs/release-note.md |
 
 Optional: if you have the pipeline skills installed (requirements-writer, requirements-checker,
 requirements-to-epics, epic-to-story-decomposer, solution-architecture-writer, adr-writer,

@@ -2,8 +2,8 @@
 
 This repo is a small AI factory. It turns a project brief into a working RAID Log Manager
 (Risks, Assumptions, Issues, Dependencies) by running six stages in Claude Code.
-Each stage is a slash command in `.claude/commands/`. Stage knowledge comes from the EPAM
-AI Factory notes in `reference/epam/` (read only the sections a stage names).
+Each stage is a slash command in `.claude/commands/`. Stage knowledge comes from trimmed EPAM
+AI Factory excerpts in `reference/epam/` (one file per stage: `s1-requirements.md` … `s6-release.md`).
 
 ## Operating rules
 1. **Human gate after every stage.** Never start stage N+1 until `docs/state.md` shows stage N as `APPROVED`.
@@ -18,7 +18,7 @@ AI Factory notes in `reference/epam/` (read only the sections a stage names).
 - `inputs/brief.md` — the project brief (source of truth). `inputs/sample-meeting-notes.md` — test data.
 - `docs/` — stage outputs. `docs/state.md` — stage status and approvals.
 - `src/`, `tests/` — the built tool (Python 3.12 or later, pytest). No network calls, no API key.
-- `reference/epam/` — EPAM AI Factory role notes (100–1000).
+- `reference/epam/` — trimmed EPAM AI Factory excerpts, named by stage (see its README).
 
 ## Product design note
 Extraction is done by a Claude Code command (`/raid-extract`) that the factory builds as part of the product, not by app code. The Python CLI validates and stores. Keep that boundary.

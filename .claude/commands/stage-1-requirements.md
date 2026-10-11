@@ -4,7 +4,7 @@ description: Stage 1 — turn the brief into testable requirements and NFRs
 # Stage 1 — Requirements
 Precondition: `inputs/brief.md` exists. Also read every file in `inputs/stakeholder-interviews/` (raw notes: extract needs from them, note conflicts between stakeholders, and do not read `inputs/meeting-notes/` or `inputs/expected/` at this stage). Set stage 1 to DRAFT in `docs/state.md` when done.
 
-**Knowledge:** skim `reference/epam/200_ProductMgmt_and_BA.md` (Blocks 3 and 6) and `reference/epam/600_Quality.md` (Block 2: requirements validation and acceptance criteria). If the `requirements-writer` / `nfr-elicitor` skills are available, use them.
+**Knowledge:** skim `reference/epam/s1-requirements.md` (requirements as the executable spec, how to ask AI to do BA work, requirements validation and acceptance criteria). If the `requirements-writer` / `nfr-elicitor` skills are available, use them.
 
 ## Produce `docs/requirements.md`
 1. **Stakeholders and needs:** table of NEED-01… (solution-free statements: who, need, why).

@@ -4,7 +4,7 @@ description: Stage 2 — group requirements into epics and write INVEST stories
 # Stage 2 — Epics and stories
 Precondition: stage 1 APPROVED. Set stage 2 to DRAFT when done.
 
-**Knowledge:** `reference/epam/200_ProductMgmt_and_BA.md` (Blocks 3 and 5). Optional skills: `requirements-to-epics`, `epic-to-story-decomposer`, `epics-vs-requirements-checker`, `story-checker`.
+**Knowledge:** `reference/epam/s1-requirements.md` (Block 3 only) and `reference/epam/s2-stories.md`. Optional skills: `requirements-to-epics`, `epic-to-story-decomposer`, `epics-vs-requirements-checker`, `story-checker`.
 
 ## Produce
 1. `docs/epics.md`: 3–5 epics (expect: extraction & review, log management, flags & duplicates, weekly summary, data safety/audit). Each has goal, REQ/NFR ids covered, sequence rationale.

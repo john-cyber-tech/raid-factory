@@ -4,7 +4,7 @@ description: Stage 6 — security review, release note, handover
 # Stage 6 — Security and delivery check
 Precondition: stage 5 APPROVED. Set stage 6 to DRAFT when done.
 
-**Knowledge:** `reference/epam/900_Security.md` (Blocks 2, 3, 5; Human-owned decisions) and `reference/epam/1000_Delivery.md` (Blocks 4–6).
+**Knowledge:** `reference/epam/s6-release.md` (threats and risk, design review, security testing, human-owned decisions, delivery).
 
 ## Produce
 1. `docs/threat-review.md`: short threat model for this tool — data flows (notes → Claude Code session → pending.json → log file), threats (prompt injection via notes content, malformed or tampered pending.json, client data handled in an AI session, log corruption, sensitive data in logs), mitigations present in code (cite files/tests), residual risks, and items needing a human security decision. Check the code actually does what it claims: confirm no network calls or keys in `src/`, and inspect logging.
