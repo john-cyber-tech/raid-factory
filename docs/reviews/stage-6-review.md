@@ -1,6 +1,6 @@
 # Stage 6 review — security and delivery check
 
-**Status:** DRAFT, third pass, awaiting the owner's approval · **Date:** 2026-10-11 · **First reviewed at commit:** `75860c3`; fix and re-verification at `94dcfb1` on `main`
+**Status:** APPROVED by the owner, 2026-10-11, as a demo build, not for distribution (third pass) · **Date:** 2026-10-11 · **First reviewed at commit:** `75860c3`; fix and re-verification at `94dcfb1` on `main`
 **Produced:** `docs/threat-review.md`, `docs/release-note.md`, `docs/traceability.md` (new section "Through SPEC → tests")
 **Scope:** the 8 built specs only (SPEC-EPIC-1-01, 1-02, 1-03, 1-04, 5-01, 5-02, 5-04, 5-05), by the owner's instruction of 2026-10-11.
 **Knowledge used:** `reference/epam/s6-release.md`: classical and AI-specific threats, Likelihood × Impact scoring, access scope and blast radius, bypass-case tests and the verification log, human-owned decisions. The optional skills and `/security-review` were not run.
