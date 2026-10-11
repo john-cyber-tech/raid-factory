@@ -379,3 +379,84 @@ def test_typed_source_date_is_not_listed_as_an_edit(tmp_path):
 
     assert created_entry(folder) == {"kind": "created", "timestamp": "2026-10-10T00:00:00", "user": USER}
     assert first_source(folder)["date"] == "2026-10-07"
+
+
+def test_typed_source_date_is_marked_on_the_source(tmp_path):
+    """REQ-040, REQ-012 (G-14): a date of the notes that the manager typed is marked on the source; one the notes stated is not."""
+    typed = undated(tmp_path, "typed")
+    assert run(typed, "review", answers="a\n2026-10-07\n")[0] == 0
+    assert first_source(typed) == {
+        "excerpt": P1["source_excerpt"], "date": "2026-10-07", "date_entered": True,
+    }
+
+    # A refused answer on the way does not change the outcome.
+    retried = undated(tmp_path, "retried")
+    assert run(retried, "review", answers="a\n2026-13-40\n\na\n2026-10-09\n")[0] == 0
+    assert first_source(retried) == {
+        "excerpt": P1["source_excerpt"], "date": "2026-10-09", "date_entered": True,
+    }
+
+    stated = new_project(tmp_path, "stated")
+    assert run(stated, "review", answers="a\na\na\n")[0] == 0
+    for item_id in ("R-001", "I-001", "D-001"):
+        assert set(first_source(stated, item_id)) == {"excerpt", "date"}
+
+
+def future_dated(tmp_path, name="project", user=USER):
+    """One pending proposal, P1, whose notes are dated the day after today (2026-10-10)."""
+    folder = new_project(tmp_path, name, fixture=None, user=user)
+    write_pending(folder, [dict(P1, source_date="2026-10-11")])
+    return folder
+
+
+def test_carried_future_source_date_is_refused_at_accept(tmp_path):
+    """REQ-040 (G-15, SA-2): a source date in pending.json that is after today is refused at accept and the date is asked for."""
+    folder = future_dated(tmp_path)
+
+    code, output = run(folder, "review", answers="a\n2026-10-07\n")
+
+    assert code == 0
+    assert "  Source date: 2026-10-11" in output.splitlines()  # shown as it arrived
+    refusal = output.split(DECISION_QUESTION)[1].split(DATE_QUESTION)[0]
+    assert "2026-10-11" in refusal and "today" in refusal
+    assert output.count(DATE_QUESTION) == 1
+    # The date the manager typed replaces it and is marked as typed.
+    assert first_source(folder) == {
+        "excerpt": P1["source_excerpt"], "date": "2026-10-07", "date_entered": True,
+    }
+
+
+def test_carried_future_source_date_never_reaches_the_log(tmp_path):
+    """REQ-040 (G-15): whatever is answered, the future date is not stored: empty cancels, another future date is asked again, end of input stops."""
+    cancelled = future_dated(tmp_path, "cancelled", user=None)
+    pending_before = (cancelled / "pending.json").read_bytes()
+    code, output = run(cancelled, "review", answers="a\n\nr\n")
+    assert code == 0
+    assert output.count(DECISION_QUESTION) == 2 and "Your name:" not in output
+    assert not log_path(cancelled).exists()
+
+    ended = future_dated(tmp_path, "ended")
+    pending_before = (ended / "pending.json").read_bytes()
+    code, _ = run(ended, "review", answers="a\n")
+    assert code == 1
+    assert not log_path(ended).exists()
+    assert (ended / "pending.json").read_bytes() == pending_before  # still carries what arrived
+
+    again = future_dated(tmp_path, "again")
+    code, output = run(again, "review", answers="a\n2026-10-11\n2026-10-10\n")
+    assert code == 0
+    assert output.count(DATE_QUESTION) == 2
+    assert first_source(again)["date"] == "2026-10-10"
+
+
+def test_carried_source_date_of_today_or_earlier_is_not_asked(tmp_path):
+    """REQ-040 (G-15): a carried source date of today or any earlier day is accepted as it is, unmarked."""
+    for day in ("2026-10-10", "2026-10-09", "2019-01-01"):
+        folder = new_project(tmp_path, day, fixture=None)
+        write_pending(folder, [dict(P1, source_date=day)])
+
+        code, output = run(folder, "review", answers="a\n")
+
+        assert code == 0, day
+        assert DATE_QUESTION not in output, day
+        assert first_source(folder) == {"excerpt": P1["source_excerpt"], "date": day}, day

@@ -48,17 +48,23 @@ def review(project_dir, store, *, stdin, stdout, now):
             answer = "e" if _edit(proposal, stdin, stdout) else None
         if answer == "e":
             continue
-        if answer == "a" and not proposal.get("source_date"):
-            # No item is accepted without the date of the notes (DEC-08). It is settled
-            # before the name, so a cancelled accept asks for nothing else and writes nothing.
-            source_date = _ask_source_date(stdin, stdout, today=now.date())
+        source_date = proposal.get("source_date")
+        date_entered = False
+        today = now.date().isoformat()
+        if answer == "a" and (not source_date or source_date > today):
+            # No item is accepted without the date of the notes (DEC-08), and notes cannot
+            # be dated after today. It is settled before the name, so a cancelled accept
+            # asks for nothing else and writes nothing.
+            if source_date:
+                print(f"The notes are dated {source_date}, which is after today ({today}). "
+                      "Give the date of the notes.", file=stdout)
+            source_date = _ask_source_date(stdin, stdout, today=today)
+            date_entered = True
             if source_date == "":
                 print("Not accepted: an item needs the date of the notes.", file=stdout)
                 continue
             if source_date is None:
                 answer = None
-            else:
-                proposal["source_date"] = source_date
         if answer is None:
             print(
                 f"\nInput ended. {len(proposals)} proposal(s) left in {PENDING_NAME}.",
@@ -76,7 +82,8 @@ def review(project_dir, store, *, stdin, stdout, now):
                 severity=proposal["severity"],
                 due_date=proposal["due_date"],
                 source_excerpt=proposal["source_excerpt"],
-                source_date=proposal["source_date"],
+                source_date=source_date,
+                source_date_entered=date_entered,
                 user=user,
                 now=now,
                 edited=[field for field in EDITABLE if proposal[field] != extracted[field]],
@@ -125,8 +132,8 @@ def _ask_source_date(stdin, stdout, *, today):
         if not is_real_date(value):
             print("That is not a date. Write it as YYYY-MM-DD, for example 2026-10-07.",
                   file=stdout)
-        elif value > today.isoformat():
-            print(f"The notes cannot be dated after today ({today.isoformat()}).", file=stdout)
+        elif value > today:
+            print(f"The notes cannot be dated after today ({today}).", file=stdout)
         else:
             return value
 

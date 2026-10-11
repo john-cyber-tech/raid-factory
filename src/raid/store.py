@@ -99,12 +99,14 @@ class LogStore:
         return list(self._data["items"])
 
     def add_item(self, *, type, title, description, owner, severity, due_date,
-                 source_excerpt, source_date, user, now, edited=()):
+                 source_excerpt, source_date, user, now, edited=(), source_date_entered=False):
         """Add an Open item with the next ID for its type and its creation entry, in one save.
 
         The item must have its source: the excerpt and the date of the notes (REQ-012).
         `edited` names the fields the manager changed before accepting; when there are
         any, the creation entry lists them (names only), otherwise it has no such key.
+        `source_date_entered` says the manager typed the date of the notes because the
+        notes did not give a usable one; the source is then marked `date_entered`.
         """
         try:
             check_source(source_excerpt, source_date)
@@ -121,7 +123,8 @@ class LogStore:
             "severity": severity,
             "due_date": due_date,
             "status": "Open",
-            "sources": [{"excerpt": source_excerpt, "date": source_date}],
+            "sources": [{"excerpt": source_excerpt, "date": source_date,
+                         **({"date_entered": True} if source_date_entered else {})}],
             "history": [_entry("created", user, now, **({"edited": list(edited)} if edited else {}))],
         }
         data["next_number"][type] = number + 1
