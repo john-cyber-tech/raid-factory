@@ -2,6 +2,8 @@
 import json
 from pathlib import Path
 
+from raid.atomic import write_atomic
+
 PENDING_NAME = "pending.json"
 QUESTION = "Accept or reject? (a/r): "
 
@@ -52,10 +54,7 @@ def _read_pending(path):
 
 
 def _write_pending(path, proposals):
-    path.write_text(
-        json.dumps({"proposals": proposals}, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
+    write_atomic(path, json.dumps({"proposals": proposals}, indent=2, ensure_ascii=False) + "\n")
 
 
 def _show(proposal, number, total, stdout):

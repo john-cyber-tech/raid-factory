@@ -5,7 +5,7 @@ from datetime import date
 from pathlib import Path
 
 from raid.review import review
-from raid.store import LogStore
+from raid.store import LogError, LogStore
 
 LIST_COLUMNS = (
     ("ID", "id"),
@@ -26,10 +26,14 @@ def main(argv, *, today, stdin, stdout, project_dir):
     commands.add_parser("list", help="list the items in this folder's log")
     args = parser.parse_args(argv)
 
-    store = LogStore.load(project_dir)
-    if args.command == "review":
-        return review(project_dir, store, stdin=stdin, stdout=stdout)
-    return _list(store, stdout)
+    try:
+        store = LogStore.load(project_dir)
+        if args.command == "review":
+            return review(project_dir, store, stdin=stdin, stdout=stdout)
+        return _list(store, stdout)
+    except LogError as error:
+        print(error, file=stdout)
+        return 1
 
 
 def _list(store, stdout):

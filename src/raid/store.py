@@ -2,9 +2,50 @@
 import json
 from pathlib import Path
 
+from raid.atomic import write_atomic
+
 LOG_NAME = "raid-log.json"
 SCHEMA_VERSION = 1
 PREFIXES = {"Risk": "R", "Assumption": "A", "Issue": "I", "Dependency": "D"}
+
+
+class LogError(Exception):
+    """The log cannot be read, or a save was refused. Nothing was written."""
+
+
+def _read(path):
+    """Parse and check the log file. Raises LogError naming the problem."""
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (ValueError, OSError) as error:
+        raise LogError(
+            f"{LOG_NAME} cannot be read as JSON ({error}). The file was not changed."
+        ) from error
+    problem = _problem(data)
+    if problem:
+        raise LogError(f"{LOG_NAME} is not a valid log: {problem}. The file was not changed.")
+    return data
+
+
+def _problem(data):
+    if not isinstance(data, dict):
+        return "the file is not a JSON object"
+    if data.get("schema_version") != SCHEMA_VERSION:
+        return f"schema_version is not {SCHEMA_VERSION}"
+    counters = data.get("next_number")
+    if not isinstance(counters, dict):
+        return "next_number is missing"
+    for item_type in PREFIXES:
+        number = counters.get(item_type)
+        if type(number) is not int or number < 1:
+            return f"next_number has no valid counter for {item_type}"
+    items = data.get("items")
+    if not isinstance(items, list):
+        return "items is not a list"
+    for position, item in enumerate(items, start=1):
+        if not isinstance(item, dict) or not isinstance(item.get("id"), str):
+            return f"item {position} has no id"
+    return None
 
 
 class LogStore:
@@ -18,7 +59,7 @@ class LogStore:
     def load(cls, project_dir):
         path = Path(project_dir) / LOG_NAME
         if path.exists():
-            data = json.loads(path.read_text(encoding="utf-8"))
+            data = _read(path)
         else:
             data = {
                 "schema_version": SCHEMA_VERSION,
@@ -51,7 +92,15 @@ class LogStore:
         return item
 
     def _save(self):
-        # Simple save for the thin slice; SPEC-EPIC-5-01 replaces it with the atomic one.
-        self._path.write_text(
-            json.dumps(self._data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
-        )
+        """The one routine that writes the log: save guard, then write-temporary-then-replace."""
+        if self._path.exists():
+            # Save guard: no item ID on disk may be missing from the new content (NFR-003).
+            new_ids = {item["id"] for item in self._data["items"]}
+            lost = sorted(item["id"] for item in _read(self._path)["items"]
+                          if item["id"] not in new_ids)
+            if lost:
+                raise LogError(
+                    f"Save refused: it would remove {', '.join(lost)} from {LOG_NAME}. "
+                    "The file was not changed."
+                )
+        write_atomic(self._path, json.dumps(self._data, indent=2, ensure_ascii=False) + "\n")
