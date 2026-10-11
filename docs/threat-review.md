@@ -75,7 +75,7 @@ The rules refuse, and the output masks, U+0000 to U+001F, U+007F to U+009F, U+20
 | Other invisible or formatting characters below U+3000 (23) | U+00AD soft hyphen · U+0600 to U+0605, U+06DD, U+070F, U+0890, U+0891, U+08E2 (Arabic and Syriac number and abbreviation marks) · U+180E Mongolian vowel separator · U+2061 to U+2064 (invisible mathematical operators) · U+206A to U+206F (deprecated shaping and swapping controls) |
 | Higher ranges (130) | U+FFF9 to U+FFFB (interlinear annotation) · U+110BD, U+110CD · U+13430 to U+1343F · U+1BCA0 to U+1BCA3 · U+1D173 to U+1D17A · U+E0001 and U+E0020 to U+E007F (tag characters, 97, which can carry hidden text) |
 
-What they can do: none moves the cursor or changes colour as an escape sequence does. They can hide a difference between two titles that look the same, shift how a line reads, or carry text a person cannot see. The embedding, override and isolate controls that reorder a whole line are refused and masked. Zero-width joiners are also part of ordinary text in some scripts and in joined emoji, so refusing them all is a decision for the owner under G-11, not a fix made here.
+What they can do: none moves the cursor or changes colour as an escape sequence does. They can hide a difference between two titles that look the same, shift how a line reads, or carry text a person cannot see. The embedding, override and isolate controls that reorder a whole line are refused and masked. Zero-width joiners are also part of ordinary text in some scripts and in joined emoji, so refusing them all is a decision for the owner under G-11, not a fix made here. The owner decided on 2026-10-11 to leave the rules unchanged in this build and to take that decision before SPEC-EPIC-1-05 merges (section 6, condition 4).
 
 ## 4. Findings from this review
 
@@ -103,7 +103,7 @@ All are open in `docs/reviews/stage-5-review.md`. "Security" says whether the ga
 | G-07 | History timestamps carry no time zone | TH-04: weakens the history as evidence across machines or a clock change |
 | G-08 | The save guard does not refuse a field change that has no history entry. Not built. No command can make such a save today | TH-04. Must be built before SPEC-EPIC-2-02 |
 | G-10 | The 80-character title limit counts code points, not displayed characters | None |
-| G-11 | The list of refused control characters is the owner's decisions plus one addition of mine, not from the contract text | TH-01 |
+| G-11 | The list of refused control characters is the owner's decisions plus one addition of mine, not from the contract text. 161 invisible formatting characters are outside it (section 3a); the tag characters among them can carry hidden text. Rules unchanged in this build by the owner's decision; to be decided before SPEC-EPIC-1-05 merges | TH-01, TH-02, and the parked path, section 6 |
 | G-12 | Line endings in a word-for-word excerpt: decided, but the two parts that carry it out are on `wip/spec-1-05` only | Parked path, section 6 |
 | G-13 | Four details of editing a proposal that the spec does not state | TH-01: decides what a reviewer can and cannot change |
 | G-16 | Whether Claude Code honours `Write(pending.json)` in a command's front matter is unconfirmed; `Read` cannot be tied to one file | Parked path, section 6 |
@@ -121,7 +121,9 @@ When that path exists, the flow gains a step in front: notes file → Claude Cod
 | Client data in notes is handled in an AI session | AI: sensitive information disclosure (LLM02) · Confidentiality | Outside the Python tool. Needs the owner's sign-off on client approval (OQ-08) before real notes are used |
 | Extraction replaces undecided proposals | Classical: data loss · Availability | G-17, open |
 
-**Accepted by the owner on 2026-10-11, on three conditions:** (1) this review is repeated before `wip/spec-1-05` is merged; (2) SPEC-EPIC-1-05 does not ship without SPEC-EPIC-1-06; (3) G-16 is settled first. No expiry date was given.
+**Accepted by the owner on 2026-10-11, on four conditions:** (1) this review is repeated before `wip/spec-1-05` is merged; (2) SPEC-EPIC-1-05 does not ship without SPEC-EPIC-1-06; (3) G-16 is settled first; (4) under G-11, before SPEC-EPIC-1-05 merges, decide whether to refuse the tag characters (U+E0001, U+E0020 to U+E007F), while still allowing the emoji flag sequences that use them, and the direction marks (U+200E, U+200F, U+061C). The rules are left unchanged in this build. No expiry date was given.
+
+Why (4) belongs with extraction: once an assistant writes `pending.json` from notes, text hidden in tag characters in the notes can be copied into an excerpt, pass the validator and sit in the log unseen.
 
 On `main` the exposure is nil in practice, because there is no extraction command. It becomes real when `wip/spec-1-05` is merged, or when anyone makes a `pending.json` from real notes with an assistant outside this tool. Then C-01 to C-06 still stand between a bad proposal and the log, but nothing here limits what the session itself does. 
 
@@ -157,7 +159,7 @@ Not run: a dependency scan, a static security scanner, any test on Python 3.12, 
 **Made by the owner on 2026-10-11:**
 
 1. F-01, F-02, F-04 and F-05 sent back and fixed (`94dcfb1`). F-03 accepted as a documented design limit.
-2. The parked extraction risk accepted on the three conditions in section 6.
+2. The parked extraction risk accepted on the four conditions in section 6. The fourth, on tag characters and direction marks (G-11), was added at the approval.
 3. The 13 open gaps in section 5 accepted for this build.
 4. **Release condition, not yet met:** a dependency scan, starting with pinning the packages `jsonschema` pulls in (`attrs`, `jsonschema-specifications`, `referencing`, `rpds-py`), before anyone else gets the build.
 

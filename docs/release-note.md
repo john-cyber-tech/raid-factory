@@ -92,5 +92,5 @@ From `docs/threat-review.md` and the open gaps in `docs/reviews/stage-5-review.m
 Suggestions only; scope is the owner's call.
 
 1. Meet the release condition: pin the transitive packages, then run a dependency scan.
-2. Settle G-16, do the six manual runs for SPEC-EPIC-1-05, build SPEC-EPIC-1-06 before merging either, and repeat the threat review for the extraction path. These are the owner's conditions for accepting the parked extraction risk.
+2. Settle G-16 and decide G-11 (whether to refuse tag characters, allowing emoji flag sequences, and the direction marks), do the six manual runs for SPEC-EPIC-1-05, build SPEC-EPIC-1-06 before merging either, and repeat the threat review for the extraction path. These are the owner's conditions for accepting the parked extraction risk.
 3. Build G-08, then SPEC-EPIC-2-06 and 2-02, following `docs/task-dag.md`.

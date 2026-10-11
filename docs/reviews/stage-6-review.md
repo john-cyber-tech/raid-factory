@@ -56,7 +56,7 @@ The owner also asked for each open gap to be listed by ID (threat review section
 
 **Other decisions the owner gave:**
 
-- The parked extraction risk is accepted on three conditions: the review is repeated before `wip/spec-1-05` merges; SPEC-EPIC-1-05 does not ship without SPEC-EPIC-1-06; G-16 is settled first. No expiry date was given.
+- The parked extraction risk is accepted on four conditions: the review is repeated before `wip/spec-1-05` merges; SPEC-EPIC-1-05 does not ship without SPEC-EPIC-1-06; G-16 is settled first; and, added at the approval, before SPEC-EPIC-1-05 merges, decide whether to refuse the tag characters (U+E0001, U+E0020 to U+E007F), while still allowing the emoji flag sequences that use them, and the direction marks (U+200E, U+200F, U+061C) (G-11). The rules are unchanged in this build. No expiry date was given.
 - The 13 open gaps are accepted for this build.
 - The release note is labelled "demo build, not for distribution".
 - **Release condition:** a dependency scan, starting with pinning the transitive packages, before anyone else gets the build. **Not done. The build is not releasable to others until it is.**
@@ -77,7 +77,7 @@ Done on the second pass: `docs/DEMO-SCRIPT.md` is rewritten for the 8-spec scope
 
 Release is the owner's decision. Items 1, 3 and 8 carry the owner's acceptance of 2026-10-11; the rest are stated for the approval.
 
-1. **Parked extraction risk.** Accepted on the three conditions above. Nil exposure on `main`.
+1. **Parked extraction risk.** Accepted on the four conditions above. Nil exposure on `main`.
 2. **Data at rest (TH-05, Medium):** the files are private to the user but plain text.
 3. **The log is not tamper-evident (TH-04, Medium):** accepted as F-03. G-07 and G-08 are open.
 4. **161 invisible formatting characters are neither refused nor masked (TH-01, TH-02, Low; threat review section 3a).** None is a terminal escape; some can hide text or a difference between two titles.
