@@ -1,0 +1,14 @@
+{
+  "proposals": [
+    {
+      "type": "Risk",
+      "title": "Client security review may delay cutover Client security review may delay cutove",
+      "description": "The client security review for the new cloud tenant has not started and could take 3-4 weeks.",
+      "owner": null,
+      "severity": "High",
+      "due_date": null,
+      "source_excerpt": "Tom said the client security review for the new cloud tenant hasn't started; Lena thinks it could take 3-4 weeks. If it slips past 28 Oct we miss the cutover window.",
+      "source_date": "2026-10-07"
+    }
+  ]
+}

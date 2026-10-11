@@ -1,0 +1,8 @@
+{
+  "proposals": [
+    {
+      "type": "Risk",
+      "title": "Client security review may delay cutover",
+      "description": "The client security review for the new cloud tenant has not started and could take 3-4 weeks.",
+      "owner": null,
+      "severity": "H

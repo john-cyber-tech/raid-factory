@@ -4,15 +4,24 @@ from pathlib import Path
 
 from raid.atomic import write_atomic
 from raid.identity import current_user
+from raid.validator import PENDING_NAME, validate
 
-PENDING_NAME = "pending.json"
 QUESTION = "Accept or reject? (a/r): "
 
 
 def review(project_dir, store, *, stdin, stdout, now):
     """Show each pending proposal and take accept or reject. Returns the exit code."""
     pending_path = Path(project_dir) / PENDING_NAME
-    proposals = _read_pending(pending_path)
+    proposals = []
+    if pending_path.exists():
+        # The whole file is checked before any proposal is shown (REQ-005).
+        proposals, errors = validate(pending_path)
+        if errors:
+            for error in errors:
+                print(error, file=stdout)
+            print(f"No proposal was shown and nothing was changed. Fix {PENDING_NAME} "
+                  "or run the extraction again.", file=stdout)
+            return 1
     if not proposals:
         print("Nothing to review.", file=stdout)
         return 0
@@ -50,12 +59,6 @@ def review(project_dir, store, *, stdin, stdout, now):
         proposals = proposals[1:]
         _write_pending(pending_path, proposals)
     return 0
-
-
-def _read_pending(path):
-    if not path.exists():
-        return []
-    return json.loads(path.read_text(encoding="utf-8"))["proposals"]
 
 
 def _write_pending(path, proposals):
