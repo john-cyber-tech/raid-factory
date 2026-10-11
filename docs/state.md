@@ -6,6 +6,6 @@
 | 3 Architecture | APPROVED | 2026-10-10 |
 | 4 Specs | APPROVED | 2026-10-10 |
 | 5 Build | APPROVED | 2026-10-11 |
-| 6 Release | NOT STARTED | |
+| 6 Release | DRAFT | |
 
 Statuses: NOT STARTED → DRAFT (awaiting review) → APPROVED
