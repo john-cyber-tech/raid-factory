@@ -41,6 +41,9 @@ Run `raid` from a project folder. It keeps three files there:
 | `raid-log.json` | The RAID log. Written only by the tool; do not edit it by hand |
 | `raid-config.json` | Your name, asked once on your first accept and recorded in each item's history |
 
+The tool creates these files readable by you only (mode 0600). They are plain text and can hold
+client material: if the project folder is kept in git, add all three to its `.gitignore`.
+
 **`raid review`** checks the whole of `pending.json` first. If any proposal is invalid it lists
 the problems, shows nothing and changes nothing (exit 1). Otherwise it shows each proposal with
 its source excerpt and asks `Accept, edit or reject? (a/e/r):`

@@ -4,7 +4,7 @@ from pathlib import Path
 
 from raid.atomic import write_atomic
 from raid.identity import current_user
-from raid.rules import RuleError, check, is_real_date
+from raid.rules import RuleError, check, is_real_date, mask, mask_long_text
 from raid.validator import PENDING_NAME, validate
 
 QUESTION = "Accept, edit or reject? (a/e/r): "
@@ -56,7 +56,7 @@ def review(project_dir, store, *, stdin, stdout, now):
             # be dated after today. It is settled before the name, so a cancelled accept
             # asks for nothing else and writes nothing.
             if source_date:
-                print(f"The notes are dated {source_date}, which is after today ({today}). "
+                print(f"The notes are dated {mask(source_date)}, which is after today ({today}). "
                       "Give the date of the notes.", file=stdout)
             source_date = _ask_source_date(stdin, stdout, today=today)
             date_entered = True
@@ -104,14 +104,15 @@ def _write_pending(path, proposals):
 
 def _show(proposal, number, total, stdout):
     print(f"\nProposal {number} of {total}", file=stdout)
-    print(f"  Type:        {proposal['type']}", file=stdout)
-    print(f"  Title:       {proposal['title']}", file=stdout)
-    print(f"  Description: {proposal['description']}", file=stdout)
-    print(f"  Owner:       {proposal['owner'] or '-'}", file=stdout)
-    print(f"  Severity:    {proposal['severity']}", file=stdout)
-    print(f"  Due date:    {proposal['due_date'] or '-'}", file=stdout)
-    print(f"  Source:      \"{proposal['source_excerpt']}\"", file=stdout)
-    print(f"  Source date: {proposal.get('source_date') or '-'}", file=stdout)
+    # The file was validated before this; masking here does not depend on that.
+    print(f"  Type:        {mask(proposal['type'])}", file=stdout)
+    print(f"  Title:       {mask(proposal['title'])}", file=stdout)
+    print(f"  Description: {mask_long_text(proposal['description'])}", file=stdout)
+    print(f"  Owner:       {mask(proposal['owner'] or '-')}", file=stdout)
+    print(f"  Severity:    {mask(proposal['severity'])}", file=stdout)
+    print(f"  Due date:    {mask(proposal['due_date'] or '-')}", file=stdout)
+    print(f"  Source:      \"{mask_long_text(proposal['source_excerpt'])}\"", file=stdout)
+    print(f"  Source date: {mask(proposal.get('source_date') or '-')}", file=stdout)
 
 
 def _ask_source_date(stdin, stdout, *, today):

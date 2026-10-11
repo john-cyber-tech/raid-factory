@@ -1,6 +1,7 @@
 """Field rules: one set, matching the pending.json contract exactly (ADR-004).
 
-Used for edits during review and for changes made through the log store. The
+Used for edits during review, for changes made through the log store, and to mask
+what is printed, so nothing from a file reaches the terminal raw (NFR-005). The
 values here are compared with pending.schema.json by a test, so they cannot drift.
 """
 import re
@@ -33,6 +34,16 @@ def is_real_date(text):
     except ValueError:
         return False
     return True
+
+
+def mask(text):
+    """`text` for one line of the terminal: every character the rules refuse becomes `?`."""
+    return FORBIDDEN_IN_ONE_LINE.sub("?", str(text))
+
+
+def mask_long_text(text):
+    """The same for a description or excerpt, where a line break and a tab are shown."""
+    return FORBIDDEN_IN_LONG_TEXT.sub("?", str(text))
 
 
 def check(field, value):

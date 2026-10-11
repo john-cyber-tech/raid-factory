@@ -2,5 +2,8 @@ __pycache__/
 .venv/
 .env
 *.pyc
-raid-log.json
+# The tool's data files, if it is run in this folder. Fixture files in tests/ are not affected.
+/raid-log.json
+/pending.json
+/raid-config.json
 .DS_Store

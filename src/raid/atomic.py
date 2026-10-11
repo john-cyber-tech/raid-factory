@@ -7,11 +7,13 @@ def write_atomic(path, text):
     temp = path.with_name(path.name + ".tmp")
     data = text.encode("utf-8")
     # A leftover temporary file from an earlier crash is simply overwritten.
-    fd = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)
+    fd = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
     try:
         while data:
             data = data[os.write(fd, data):]
         os.fsync(fd)
     finally:
         os.close(fd)
+    # Readable by the user only (NFR-006), also when a leftover temporary file was wider.
+    os.chmod(temp, 0o600)
     os.replace(temp, path)

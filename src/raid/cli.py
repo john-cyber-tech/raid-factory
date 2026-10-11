@@ -6,6 +6,7 @@ from pathlib import Path
 
 from raid.identity import NameRequired
 from raid.review import review
+from raid.rules import mask
 from raid.store import LogError, LogStore
 
 LIST_COLUMNS = (
@@ -47,7 +48,7 @@ def main(argv, *, today, stdin, stdout, project_dir, now=None):
 
 
 def _list(store, stdout):
-    rows = [[item[key] or "-" for _, key in LIST_COLUMNS] for item in store.all()]
+    rows = [[mask(item[key] or "-") for _, key in LIST_COLUMNS] for item in store.all()]
     header = [label for label, _ in LIST_COLUMNS]
     widths = [max(len(row[i]) for row in [header, *rows]) for i in range(len(header))]
     for row in [header, *rows]:

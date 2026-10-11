@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 from raid.atomic import write_atomic
-from raid.rules import RuleError, check, check_source
+from raid.rules import RuleError, check, check_source, mask
 
 LOG_NAME = "raid-log.json"
 SCHEMA_VERSION = 1
@@ -14,6 +14,9 @@ PREFIXES = {"Risk": "R", "Assumption": "A", "Issue": "I", "Dependency": "D"}
 TYPES = {prefix: item_type for item_type, prefix in PREFIXES.items()}
 ID_PATTERN = re.compile(r"([RAID])-(\d+)")
 UPDATABLE = ("title", "description", "owner", "severity", "due_date")
+# Every item holds these as text; only an owner and a due date may be empty.
+TEXT_FIELDS = ("type", "title", "description", "owner", "severity", "due_date", "status")
+MAY_BE_EMPTY = ("owner", "due_date")
 
 
 class LogError(Exception):
@@ -52,8 +55,14 @@ def _problem(data):
     for position, item in enumerate(items, start=1):
         if not isinstance(item, dict) or not isinstance(item.get("id"), str):
             return f"item {position} has no id"
+        name = mask(item["id"])  # a hand-edited ID is not printed raw
+        for field in TEXT_FIELDS:
+            value = item.get(field)
+            if not isinstance(value, str) and not (value is None and field in MAY_BE_EMPTY
+                                                   and field in item):
+                return f"{name} has no {field}"
         if not isinstance(item.get("history"), list) or not item["history"]:
-            return f"{item['id']} has no history"
+            return f"{name} has no history"
         sources = item.get("sources")
         first = sources[0] if isinstance(sources, list) and sources else None
         try:
@@ -61,7 +70,7 @@ def _problem(data):
                 raise RuleError("no source")
             check_source(first.get("excerpt"), first.get("date"))
         except RuleError:
-            return f"{item['id']} has no source excerpt with a real source date"
+            return f"{name} has no source excerpt with a real source date"
     # A counter at or below an existing ID would give that ID out a second time (REQ-011).
     for item in items:
         match = ID_PATTERN.fullmatch(item["id"])
@@ -70,7 +79,7 @@ def _problem(data):
             if counters[item_type] <= int(match.group(2)):
                 return (
                     f"the next {item_type} number is {counters[item_type]} "
-                    f"but {item['id']} already exists"
+                    f"but {mask(item['id'])} already exists"
                 )
     return None
 
@@ -170,7 +179,7 @@ class LogStore:
             lost = sorted(item["id"] for item in on_disk if item["id"] not in new)
             if lost:
                 raise LogError(
-                    f"Save refused: it would remove {', '.join(lost)} from {LOG_NAME}. "
+                    f"Save refused: it would remove {mask(', '.join(lost))} from {LOG_NAME}. "
                     "The file was not changed."
                 )
             # And no history entry on disk may be different or missing (NFR-007).
@@ -178,7 +187,7 @@ class LogStore:
                 kept = new[item["id"]]["history"][:len(item["history"])]
                 if kept != item["history"]:
                     raise LogError(
-                        f"Save refused: it would alter the history of {item['id']} in {LOG_NAME}. "
+                        f"Save refused: it would alter the history of {mask(item['id'])} in {LOG_NAME}. "
                         "The file was not changed."
                     )
         write_atomic(self._path, json.dumps(data, indent=2, ensure_ascii=False) + "\n")
