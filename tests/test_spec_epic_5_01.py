@@ -232,3 +232,67 @@ def test_leftover_temp_file_is_harmless(tmp_path):
     assert code == 0
     assert sorted(log_items(folder)) == ["R-001", "R-002", "R-003"]
     assert not (folder / TEMP_NAME).exists()
+
+
+def hand_edited_log(tmp_path, ids, **counters):
+    """A project whose log holds the given IDs and counters, as a hand edit might leave it."""
+    types = {"R": "Risk", "A": "Assumption", "I": "Issue", "D": "Dependency"}
+    folder = new_project(tmp_path)
+    data = {
+        "schema_version": 1,
+        "next_number": {"Risk": 1, "Assumption": 1, "Issue": 1, "Dependency": 1, **counters},
+        "items": [
+            {
+                "id": item_id,
+                "type": types[item_id[0]],
+                "title": f"Item {item_id}",
+                "description": "",
+                "owner": None,
+                "severity": "Low",
+                "due_date": None,
+                "status": "Open",
+                "sources": [{"excerpt": "From the notes.", "date": "2026-10-07"}],
+            }
+            for item_id in ids
+        ],
+    }
+    log_path(folder).write_text(json.dumps(data, indent=2), encoding="utf-8")
+    return folder
+
+
+@pytest.mark.parametrize(
+    "ids, counters, named",
+    [
+        (["R-001", "R-003"], {"Risk": 3}, "R-003"),          # counter equals the highest ID
+        (["R-001", "R-003"], {"Risk": 2}, "R-003"),          # counter below the highest ID
+        (["R-003", "R-001"], {"Risk": 3}, "R-003"),          # highest ID is not the last item
+        (["R-001", "D-001"], {"Risk": 2, "Dependency": 1}, "D-001"),  # another type's counter
+        (["A-012"], {"Assumption": 2}, "A-012"),             # compared as numbers, not text
+    ],
+)
+def test_counter_behind_existing_id_is_damaged(tmp_path, ids, counters, named):
+    """REQ-011, NFR-003 (G-05): a counter at or below the highest existing ID of its type is a damaged log; nothing is written."""
+    folder = hand_edited_log(tmp_path, ids, **counters)
+    log_before = log_path(folder).read_bytes()
+    pending_before = (folder / "pending.json").read_bytes()
+
+    for argv, answers in ((("review",), "a\na\na\n"), (("list",), "")):
+        code, output = run(folder, *argv, answers=answers)
+
+        assert code == 1
+        assert "raid-log.json" in output
+        assert named in output
+        assert log_path(folder).read_bytes() == log_before
+        assert (folder / "pending.json").read_bytes() == pending_before
+
+
+def test_counter_ahead_of_existing_ids_is_valid(tmp_path):
+    """REQ-011 (G-05): a counter above the highest ID is valid, with or without gaps, and the next ID comes from it."""
+    folder = hand_edited_log(tmp_path, ["R-001", "R-003", "D-002"], Risk=4, Dependency=7)
+    write_pending(folder, [risk("Next risk")])
+
+    assert run(folder, "list")[0] == 0
+    code, _ = run(folder, "review", answers="a\n")
+
+    assert code == 0
+    assert sorted(log_items(folder)) == ["D-002", "R-001", "R-003", "R-004"]

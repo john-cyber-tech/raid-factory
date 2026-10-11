@@ -1,5 +1,6 @@
 """Log store (COMP-05): the only code that writes raid-log.json (ADR-001)."""
 import json
+import re
 from pathlib import Path
 
 from raid.atomic import write_atomic
@@ -7,6 +8,8 @@ from raid.atomic import write_atomic
 LOG_NAME = "raid-log.json"
 SCHEMA_VERSION = 1
 PREFIXES = {"Risk": "R", "Assumption": "A", "Issue": "I", "Dependency": "D"}
+TYPES = {prefix: item_type for item_type, prefix in PREFIXES.items()}
+ID_PATTERN = re.compile(r"([RAID])-(\d+)")
 
 
 class LogError(Exception):
@@ -45,6 +48,16 @@ def _problem(data):
     for position, item in enumerate(items, start=1):
         if not isinstance(item, dict) or not isinstance(item.get("id"), str):
             return f"item {position} has no id"
+    # A counter at or below an existing ID would give that ID out a second time (REQ-011).
+    for item in items:
+        match = ID_PATTERN.fullmatch(item["id"])
+        if match:
+            item_type = TYPES[match.group(1)]
+            if counters[item_type] <= int(match.group(2)):
+                return (
+                    f"the next {item_type} number is {counters[item_type]} "
+                    f"but {item['id']} already exists"
+                )
     return None
 
 
