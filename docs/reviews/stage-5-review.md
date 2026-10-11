@@ -1,7 +1,7 @@
 # Stage 5 review — Build (in progress)
 
 **Status:** in progress · **Started:** 2026-10-11 · **Upstream:** `docs/specs/`, `docs/task-dag.md`
-**Progress:** 2 of 25 specs committed (SPEC-EPIC-1-01, SPEC-EPIC-5-01; gate 2 for both approved 2026-10-11). Next: SPEC-EPIC-5-04.
+**Progress:** 3 of 25 specs committed (SPEC-EPIC-1-01, SPEC-EPIC-5-01, SPEC-EPIC-5-04). Next: SPEC-EPIC-5-05.
 
 ## Spec → tests → result
 
@@ -9,10 +9,13 @@
 |---|---|---|---|---|
 | SPEC-EPIC-1-01 | HIGH | 12 in `tests/test_spec_epic_1_01.py` (the 11 in the test plan plus `test_real_entry_point_exit_codes`, added at gate 1 by the owner) | 12 passed on Python 3.13.9 | Story EPIC-1-01 criteria 1 to 8, CF-5 |
 | SPEC-EPIC-5-01 | HIGH | 7 in `tests/test_spec_epic_5_01.py`, 40 cases with parametrisation (4 failure steps, 27 command sequences, 5 damaged logs) | 40 passed; whole suite 52 passed | Story EPIC-5-01 criteria 1 to 4, CF-1 |
+| SPEC-EPIC-5-04 | MEDIUM | 7 in `tests/test_boundaries.py`, 28 cases with parametrisation (22 planted imports and shell calls): the 6 in the test plan plus `test_outside_watch_catches_a_planted_write` | 28 passed; whole suite 80 passed | Story EPIC-5-04 criteria 1 to 4 |
 
 Gate 1 for SPEC-EPIC-1-01: tests approved by the owner on 2026-10-11. Before any code existed the run was 10 failed, 2 passed, 12 collected with no collection error; 9 failed on `No module named 'raid'` and the entry-point test on the missing `pyproject.toml`.
 
 Gate 1 for SPEC-EPIC-5-01: tests approved by the owner on 2026-10-11 with changes (shared helpers moved to `tests/helpers.py`, a zero-byte log case, each failure test asserts its injected failure fired). Before the code existed the run was 11 failed, 40 passed, 51 collected with no collection error; the zero-byte case then made it 52.
+
+SPEC-EPIC-5-04 (MEDIUM): tests written first. Before the fixtures and the import check existed the run was 13 failed, 2 errors, 2 passed, 69 collected with no collection error. The two that passed (`test_commands_work_without_api_keys`, `test_only_declared_dependency_is_jsonschema`) check behaviour that SPEC-EPIC-1-01 already has. The owner approved the diff on 2026-10-11 with changes: the socket block records every attempt and fails the test at its end if any is on record; the import check also refuses `asyncio`, `ssl`, `smtplib`, `ftplib`, `urllib3`, `aiohttp` and `openai`, and calls to `os.system` and `os.popen`, each with a planted case that failed before the check was extended.
 
 ## Open spec gaps
 
@@ -48,6 +51,9 @@ Gate 1 for SPEC-EPIC-5-01: tests approved by the owner on 2026-10-11 with change
 | N-03 | SPEC-EPIC-5-01 | The temporary-file-then-replace routine is `src/raid/atomic.py`, used by the store's `_save()` for the log and by the review flow for `pending.json`. It is the one place in `src/` that opens a file for writing. A valid log is: an object with `schema_version` 1, a `next_number` counter of 1 or more for each of the four types, and an `items` list whose entries each have an `id`. Later specs that add fields should extend this check. This covers the structure of `raid-log.json` only; it is not the validation of proposals in `pending.json`, which is SPEC-EPIC-1-02 |
 | N-04 | SPEC-EPIC-5-01, ADR-001 | The save syncs the temporary file's content to disk and then replaces the log, as the spec and ADR-001 describe. It does not sync the folder after the replace. After a power loss the log is still either the complete old or the complete new file, but the very last save may not have reached the disk even though the command reported success. A process crash is not affected |
 | N-05 | SPEC-EPIC-5-01 | The message for a zero-byte or unparseable log carries the JSON parser's wording, for example "Expecting value: line 1 column 1 (char 0)". This is cosmetic: the file is named, the exit code is 1 and nothing is written. Plain wording could be added without changing behaviour |
+| N-06 | SPEC-EPIC-5-04 | Three limits of the safety net. The socket block works inside the test process only, so the one test that starts a child process (`test_real_entry_point_exit_codes`) is not covered by it. The import check reads `import` statements and direct `os.system` / `os.popen` calls; it would not see a module loaded by name at run time, or `os` used under another name. It refuses every `subprocess` import in `src/`, which is stricter than the spec's "`subprocess` used to start a model", because the tool has no other use for it |
+| N-07 | SPEC-EPIC-5-04 | The import check lives in `tests/boundary_check.py`, beside `tests/test_boundaries.py`, not inside it as the spec words it, so the tests can import it one at a time. The outside-write fixture also moves the home folder and the current folder inside the watched folder, so a stray write to either would be seen. New commands are added to `COMMANDS` in `tests/test_boundaries.py` |
+| N-08 | SPEC-EPIC-5-04, NFR-006 | `outside_watch` sees only the watched parent folder, which holds the project folder, a sentinel file, the home folder and the current folder. A write to an absolute path elsewhere on the machine, for example a fixed path under `/tmp` or `/var`, would not be caught. What stands against that today is the grep of `src/` showing that `atomic.py` is the only code that writes a file, and that both its callers build the path from the project folder |
 | N-02 | SPEC-EPIC-1-01, SPEC-EPIC-1-02 | `jsonschema` is declared and pinned (4.25.0) in `pyproject.toml` now, as SPEC-EPIC-1-01's capabilities ask, but nothing imports it until SPEC-EPIC-1-02 |
 
 ## Defects
