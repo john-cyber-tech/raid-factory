@@ -5,7 +5,7 @@
 | 2 Stories | APPROVED | 2026-10-10 |
 | 3 Architecture | APPROVED | 2026-10-10 |
 | 4 Specs | APPROVED | 2026-10-10 |
-| 5 Build | NOT STARTED | |
+| 5 Build | DRAFT | |
 | 6 Release | NOT STARTED | |
 
 Statuses: NOT STARTED → DRAFT (awaiting review) → APPROVED

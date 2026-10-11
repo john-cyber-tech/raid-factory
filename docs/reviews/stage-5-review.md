@@ -1,6 +1,6 @@
 # Stage 5 review — Build (scope reduced)
 
-**Status:** build stopped at a reduced scope by the owner's decision, 2026-10-11; awaiting the owner's review · **Started:** 2026-10-11 · **Upstream:** `docs/specs/`, `docs/task-dag.md`
+**Status:** DRAFT, awaiting the owner's approval; build stopped at a reduced scope by the owner's decision, 2026-10-11 · **Started:** 2026-10-11 · **Upstream:** `docs/specs/`, `docs/task-dag.md`
 **Progress:** 8 of 25 specs built and committed on `main`: SPEC-EPIC-1-01, 1-02, 1-03, 1-04, 5-01, 5-02, 5-04, 5-05. SPEC-EPIC-1-05 and SPEC-EPIC-1-06 are **deferred**; the other 15 specs are **out of scope for this run**. See "Scope reduction" below. Whole suite on `main`: 329 passed, none failed, none skipped.
 
 ## Scope reduction (owner's decision, 2026-10-11)
@@ -11,7 +11,9 @@
 
 **Out of scope for this run (15 specs, not started):** SPEC-EPIC-2-01 to 2-07, SPEC-EPIC-3-01 to 3-04, SPEC-EPIC-4-01 to 4-03, SPEC-EPIC-5-03. Gated step 11a (G-08) is not built either.
 
-**What `main` therefore does not have:** no `/raid-extract` command, so a `pending.json` has to come from a fixture or be written by hand; no update, close, add-by-hand, flags, duplicates, merge or weekly summary. From the stage 5 command's own list, also not done: the hand test of `/raid-extract` on `inputs/sample-meeting-notes.md`, the README usage section, and the end-to-end test through validate → review → flag → summary (flag and summary are out of scope).
+**What `main` therefore does not have:** no `/raid-extract` command, so a `pending.json` has to come from a fixture or be written by hand; no update, close, add-by-hand, flags, duplicates, merge or weekly summary. The README usage section is written for the two built commands, `raid review` and `raid list`. From the stage 5 command's own list, not done: the hand test of `/raid-extract` on `inputs/sample-meeting-notes.md`, and the end-to-end test through validate → review → flag → summary (flag and summary are out of scope).
+
+**Owner's instruction for stage 6, 2026-10-11:** the threat review and the release note cover only the 8 built specs. The 2 deferred specs, the 15 out-of-scope specs and the open gaps are listed there as known limits, not reviewed as if built.
 
 **Gaps kept open:** G-08, G-12, G-16 and G-17, in the table below with the rest. G-12's decision stands, but the two parts that carry it out belong to SPEC-EPIC-1-05 and exist only on the branch, so it is listed as open again.
 
