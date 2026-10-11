@@ -6,13 +6,13 @@ from datetime import datetime
 from pathlib import Path
 
 from raid.atomic import write_atomic
+from raid.rules import RuleError, check
 
 LOG_NAME = "raid-log.json"
 SCHEMA_VERSION = 1
 PREFIXES = {"Risk": "R", "Assumption": "A", "Issue": "I", "Dependency": "D"}
 TYPES = {prefix: item_type for item_type, prefix in PREFIXES.items()}
 ID_PATTERN = re.compile(r"([RAID])-(\d+)")
-SEVERITIES = ("High", "Medium", "Low")
 UPDATABLE = ("title", "description", "owner", "severity", "due_date")
 
 
@@ -125,10 +125,10 @@ class LogStore:
         for field, value in changes.items():
             if field not in UPDATABLE:
                 raise LogError(f"{field} cannot be changed. Nothing was changed.")
-            if field == "severity" and value not in SEVERITIES:
-                raise LogError(
-                    f"severity must be one of {', '.join(SEVERITIES)}. Nothing was changed."
-                )
+            try:
+                check(field, value)
+            except RuleError as error:
+                raise LogError(f"{error}. Nothing was changed.") from error
         changed = False
         for field, value in changes.items():
             if item[field] != value:

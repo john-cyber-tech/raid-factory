@@ -57,7 +57,7 @@ def rejected(folder):
     assert code == 1
     assert "pending.json" in output
     # No proposal was shown for a decision, and no name was asked for.
-    assert "Accept or reject" not in output
+    assert "Proposal 1 of" not in output
     assert "Your name:" not in output
     for title in (P1_TITLE, P2_TITLE, P3_TITLE):
         assert f"Title:       {title}" not in output

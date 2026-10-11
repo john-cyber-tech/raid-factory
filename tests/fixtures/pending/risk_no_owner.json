@@ -1,0 +1,14 @@
+{
+  "proposals": [
+    {
+      "type": "Risk",
+      "title": "Test environment down",
+      "description": "The test environment has been down since Monday, so sample data cannot be loaded.",
+      "owner": null,
+      "severity": "High",
+      "due_date": null,
+      "source_excerpt": "The test environment has been down since Monday; Lena can't load sample data. Priya to chase infra, no date given.",
+      "source_date": "2026-10-07"
+    }
+  ]
+}

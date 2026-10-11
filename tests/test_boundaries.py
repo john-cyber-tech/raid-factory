@@ -7,6 +7,7 @@ import os
 import re
 import socket
 import tomllib
+import unicodedata
 
 import pytest
 
@@ -150,3 +151,22 @@ def test_only_declared_dependency_is_jsonschema():
 
     assert len(project["dependencies"]) == 1
     assert re.fullmatch(r"jsonschema==[\d.]+", project["dependencies"][0])
+
+
+def test_no_invisible_characters_in_source():
+    """NFR-005: no file under src/, tests/ (fixtures included) or docs/ holds a literal control, line-separator or text-direction character; they are written as escapes."""
+    assert (REPO / "tests" / "fixtures" / "pending" / "control_char.json").is_file()
+    assert (REPO / "docs" / "task-dag.md").is_file()
+    found = []
+    for folder in (SRC, REPO / "tests", REPO / "docs"):
+        for path in sorted(folder.rglob("*")):
+            if path.suffix not in (".py", ".json", ".toml", ".md"):
+                continue
+            for number, line in enumerate(path.read_text(encoding="utf-8").split("\n"), start=1):
+                bad = sorted({
+                    f"U+{ord(ch):04X}" for ch in line
+                    if ch != "\t" and unicodedata.category(ch) in ("Cc", "Cf", "Zl", "Zp")
+                })
+                if bad:
+                    found.append(f"{path.relative_to(REPO)}:{number}: {', '.join(bad)}")
+    assert found == []

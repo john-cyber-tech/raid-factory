@@ -1,16 +1,15 @@
 """Pending contract validator (COMP-02): pending.schema.json is the single definition of valid (ADR-004)."""
 import json
-import re
 import unicodedata
-from datetime import date
 from pathlib import Path
 
 from jsonschema import Draft202012Validator
 
+from raid.rules import is_real_date
+
 PENDING_NAME = "pending.json"
 SCHEMA_PATH = Path(__file__).parent / "schemas" / "pending.schema.json"
 DATE_FIELDS = ("due_date", "source_date")
-DATE_FORMAT = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}")
 MULTI_LINE_FIELDS = ("description", "source_excerpt")
 
 
@@ -122,13 +121,7 @@ def _impossible_dates(proposals):
     for number, proposal in enumerate(proposals, start=1):
         for field in DATE_FIELDS:
             value = proposal.get(field)
-            if value is None:
-                continue
-            try:
-                if not DATE_FORMAT.fullmatch(value):
-                    raise ValueError(value)
-                date(int(value[:4]), int(value[5:7]), int(value[8:]))
-            except ValueError:
+            if value is not None and not is_real_date(value):
                 problems.append((number, f"proposal {number}: {field} is not a real date "
                                          f"({_safe(value)}); write it as YYYY-MM-DD"))
     return problems
