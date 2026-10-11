@@ -59,6 +59,15 @@ The Criteria column gives the story's acceptance criterion numbers; CF-n is an i
 
 **Test data:** R-001 owner "Priya Nair", High; proposal with empty owner, Low, same title. A second log where R-001 was closed on 2026-10-08 with the reason "Security review completed"; today 2026-10-10; name "Sean Murphy".
 
+## Notes carried from stage 5
+
+Added 2026-10-11 by the owner's instruction, from note N-17 in `docs/reviews/stage-5-review.md`.
+
+- "The first source can never be emptied" (SPEC-EPIC-1-04) holds today because nothing can change a source at all: `sources` is not an updatable field. This spec is the first to change the list.
+- A merge must **append** a source through a log store method that checks it with `rules.check_source` (non-blank excerpt, real source date). It must never replace the list or touch the first source.
+- The merge's history entry is written in the same save as the new source. Step 11a in `docs/task-dag.md` (stage 5 gap G-08) makes the save guard refuse an item that changed without a new history entry, so a source added with no entry would be refused.
+- The future-date check on a typed source date uses the `today` passed to the CLI, so tests fix it.
+
 ## Definition of done
 
 - Every test in the test plan exists and passes under `pytest` on Python 3.13, with no Claude Code session and no network.
