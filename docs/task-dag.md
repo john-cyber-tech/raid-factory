@@ -1,8 +1,21 @@
 # Task DAG — build order, parallel work, risk tiers (Stage 4)
 
-**Status:** APPROVED (with stage 4, 2026-10-10); amended 2026-10-11 by the owner's decision during stage 5: step 11a added for stage 5 gap G-08 · **Date:** 2026-10-10 · **Upstream:** `docs/specs/`, `docs/epics.md`, `docs/architecture.md`, `docs/reviews/stage-5-review.md` (G-08)
+**Status:** APPROVED (with stage 4, 2026-10-10); amended 2026-10-11 by the owner's decision during stage 5: step 11a added for stage 5 gap G-08; amended again 2026-10-11 by the owner's decision to reduce the scope of stage 5 (see "Scope of this run") · **Date:** 2026-10-10 · **Upstream:** `docs/specs/`, `docs/epics.md`, `docs/architecture.md`, `docs/reviews/stage-5-review.md` (G-08)
 
 One task per spec. Stage 5 builds one spec at a time, tests first, and commits after each green spec.
+
+## Scope of this run (owner's decision, 2026-10-11)
+
+Stage 5 stops after 8 of the 25 specs. Tiers, dependencies, order and waves below are unchanged; only the Status column is new.
+
+| Status | Tasks | Reason |
+|---|---|---|
+| BUILT (8) | SPEC-EPIC-1-01, 1-02, 1-03, 1-04, 5-01, 5-02, 5-04, 5-05 | Committed on `main`, suite green |
+| DEFERRED (2) | SPEC-EPIC-1-05, SPEC-EPIC-1-06 | Extraction needs six manual runs by the owner, which have not been done. The prompt, its helper, tests, notes fixture and manual check steps are parked on branch `wip/spec-1-05` and are not on `main` |
+| OUT OF SCOPE for this run (15) | SPEC-EPIC-2-01 to 2-07, 3-01 to 3-04, 4-01 to 4-03, 5-03 | Not started |
+| NOT BUILT (1 gated step) | 11a, G-08 | Stays an open gap in `docs/reviews/stage-5-review.md`. Its only dependant, SPEC-EPIC-2-02, is out of scope |
+
+Nothing else depends on SPEC-EPIC-1-05 or SPEC-EPIC-1-06 except each other: SPEC-EPIC-1-06 depends on SPEC-EPIC-1-05, and no other task lists either one under "Depends on". Deferring them blocks no other task.
 
 ## Risk tiers
 
@@ -16,34 +29,34 @@ The six HIGH tasks therefore each stop twice: SPEC-EPIC-1-01, SPEC-EPIC-5-01, SP
 
 ## Build order
 
-| # | Task | Tier | Stops for you | Depends on | Wave | Open questions |
-|---|---|---|---|---|---|---|
-| 1 | SPEC-EPIC-1-01 Review fixture proposals into the log and list them (thin slice) | HIGH | tests, then code | — | 1 | — |
-| 2 | SPEC-EPIC-5-01 Log writes are atomic and never lose accepted items | HIGH | tests, then code | EPIC-1-01 | 2 | — |
-| 3 | SPEC-EPIC-5-04 The tool stays local: no network, no API key | MEDIUM | diff | EPIC-1-01 | 2 | — |
-| 4 | SPEC-EPIC-5-05 Ask for my name once and remember it | MEDIUM | diff | EPIC-1-01 | 2 | — |
-| 5 | SPEC-EPIC-5-02 Every change to an item is recorded in an append-only history | HIGH | tests, then code | EPIC-1-01, EPIC-5-01, EPIC-5-05 | 3 | — |
-| 6 | SPEC-EPIC-1-02 Reject invalid extraction output | HIGH | tests, then code | EPIC-1-01 | 2 | — |
-| 7 | SPEC-EPIC-1-03 Edit a proposal before accepting it | MEDIUM | diff | EPIC-1-01, EPIC-1-02 | 3 | — |
-| 8 | SPEC-EPIC-1-04 Keep the source excerpt and date with every item | MEDIUM | diff | EPIC-1-01 | 2 | — |
-| 9 | SPEC-EPIC-1-05 `/raid-extract` writes proposals from a notes file | HIGH | tests, then code | EPIC-1-02, EPIC-1-04 | 3 | — |
-| 10 | SPEC-EPIC-1-06 Extraction ignores instructions hidden in notes | HIGH | tests, then code | EPIC-1-05 | 4 | — |
-| 11 | SPEC-EPIC-2-06 View one item in full | LOW | none | EPIC-1-04, EPIC-5-02 | 4 | — |
-| 11a | G-08 Save guard refuses a field change that has no new history entry (stage 5 gap; extends SPEC-EPIC-5-02, NFR-007, ADR-006) | HIGH | tests, then code | EPIC-5-02 | 4 | — |
-| 12 | SPEC-EPIC-2-02 Update an item | LOW | none | EPIC-5-02, G-08 | 5 | — |
-| 13 | SPEC-EPIC-2-01 List only my items | LOW | none | EPIC-1-01 | 2 | — |
-| 14 | SPEC-EPIC-2-03 Status, and closing an item with a reason | MEDIUM | diff | EPIC-2-02, EPIC-2-06 | 6 | — |
-| 15 | SPEC-EPIC-2-05 Check note on assumptions, waiting-on party on dependencies | MEDIUM | diff | EPIC-1-03, EPIC-2-02, EPIC-2-06 | 6 | — |
-| 16 | SPEC-EPIC-2-04 Add an item by hand | MEDIUM | diff | EPIC-1-04, EPIC-5-02, EPIC-2-06 | 5 | — |
-| 17 | SPEC-EPIC-2-07 Mark an item as needing a decision | LOW | none | EPIC-2-02, EPIC-2-06 | 6 | — |
-| 18 | SPEC-EPIC-3-01 Flag unowned and overdue items | LOW | none | EPIC-2-03 | 7 | — |
-| 19 | SPEC-EPIC-3-02 Flag stale items | LOW | none | EPIC-3-01, EPIC-5-02 | 8 | — |
-| 20 | SPEC-EPIC-3-03 Show likely duplicates during review | MEDIUM | diff | EPIC-1-03 | 4 | — |
-| 21 | SPEC-EPIC-3-04 Merge a proposal into an existing item | MEDIUM | diff | EPIC-3-03, EPIC-5-02, EPIC-2-03 | 7 | — |
-| 22 | SPEC-EPIC-5-03 Items are never deleted | LOW | none | EPIC-2-03, EPIC-3-04 | 8 | — |
-| 23 | SPEC-EPIC-4-01 Generate the weekly summary with new and overdue items | MEDIUM | diff | EPIC-3-01, EPIC-5-02 | 8 | — |
-| 24 | SPEC-EPIC-4-02 Summary shows top risks, what is blocked by whom, and decisions needed | LOW | none | EPIC-4-01, EPIC-2-05, EPIC-2-07 | 9 | — |
-| 25 | SPEC-EPIC-4-03 Summary shows owners and never exceeds 400 words | MEDIUM | diff | EPIC-4-02 | 10 | — |
+| # | Task | Tier | Stops for you | Depends on | Wave | Open questions | Status (2026-10-11) |
+|---|---|---|---|---|---|---|---|
+| 1 | SPEC-EPIC-1-01 Review fixture proposals into the log and list them (thin slice) | HIGH | tests, then code | — | 1 | — | BUILT |
+| 2 | SPEC-EPIC-5-01 Log writes are atomic and never lose accepted items | HIGH | tests, then code | EPIC-1-01 | 2 | — | BUILT |
+| 3 | SPEC-EPIC-5-04 The tool stays local: no network, no API key | MEDIUM | diff | EPIC-1-01 | 2 | — | BUILT |
+| 4 | SPEC-EPIC-5-05 Ask for my name once and remember it | MEDIUM | diff | EPIC-1-01 | 2 | — | BUILT |
+| 5 | SPEC-EPIC-5-02 Every change to an item is recorded in an append-only history | HIGH | tests, then code | EPIC-1-01, EPIC-5-01, EPIC-5-05 | 3 | — | BUILT |
+| 6 | SPEC-EPIC-1-02 Reject invalid extraction output | HIGH | tests, then code | EPIC-1-01 | 2 | — | BUILT |
+| 7 | SPEC-EPIC-1-03 Edit a proposal before accepting it | MEDIUM | diff | EPIC-1-01, EPIC-1-02 | 3 | — | BUILT |
+| 8 | SPEC-EPIC-1-04 Keep the source excerpt and date with every item | MEDIUM | diff | EPIC-1-01 | 2 | — | BUILT |
+| 9 | SPEC-EPIC-1-05 `/raid-extract` writes proposals from a notes file | HIGH | tests, then code | EPIC-1-02, EPIC-1-04 | 3 | — | **DEFERRED** |
+| 10 | SPEC-EPIC-1-06 Extraction ignores instructions hidden in notes | HIGH | tests, then code | EPIC-1-05 | 4 | — | **DEFERRED** |
+| 11 | SPEC-EPIC-2-06 View one item in full | LOW | none | EPIC-1-04, EPIC-5-02 | 4 | — | OUT OF SCOPE for this run |
+| 11a | G-08 Save guard refuses a field change that has no new history entry (stage 5 gap; extends SPEC-EPIC-5-02, NFR-007, ADR-006) | HIGH | tests, then code | EPIC-5-02 | 4 | — | NOT BUILT; gap G-08 stays open |
+| 12 | SPEC-EPIC-2-02 Update an item | LOW | none | EPIC-5-02, G-08 | 5 | — | OUT OF SCOPE for this run |
+| 13 | SPEC-EPIC-2-01 List only my items | LOW | none | EPIC-1-01 | 2 | — | OUT OF SCOPE for this run |
+| 14 | SPEC-EPIC-2-03 Status, and closing an item with a reason | MEDIUM | diff | EPIC-2-02, EPIC-2-06 | 6 | — | OUT OF SCOPE for this run |
+| 15 | SPEC-EPIC-2-05 Check note on assumptions, waiting-on party on dependencies | MEDIUM | diff | EPIC-1-03, EPIC-2-02, EPIC-2-06 | 6 | — | OUT OF SCOPE for this run |
+| 16 | SPEC-EPIC-2-04 Add an item by hand | MEDIUM | diff | EPIC-1-04, EPIC-5-02, EPIC-2-06 | 5 | — | OUT OF SCOPE for this run |
+| 17 | SPEC-EPIC-2-07 Mark an item as needing a decision | LOW | none | EPIC-2-02, EPIC-2-06 | 6 | — | OUT OF SCOPE for this run |
+| 18 | SPEC-EPIC-3-01 Flag unowned and overdue items | LOW | none | EPIC-2-03 | 7 | — | OUT OF SCOPE for this run |
+| 19 | SPEC-EPIC-3-02 Flag stale items | LOW | none | EPIC-3-01, EPIC-5-02 | 8 | — | OUT OF SCOPE for this run |
+| 20 | SPEC-EPIC-3-03 Show likely duplicates during review | MEDIUM | diff | EPIC-1-03 | 4 | — | OUT OF SCOPE for this run |
+| 21 | SPEC-EPIC-3-04 Merge a proposal into an existing item | MEDIUM | diff | EPIC-3-03, EPIC-5-02, EPIC-2-03 | 7 | — | OUT OF SCOPE for this run |
+| 22 | SPEC-EPIC-5-03 Items are never deleted | LOW | none | EPIC-2-03, EPIC-3-04 | 8 | — | OUT OF SCOPE for this run |
+| 23 | SPEC-EPIC-4-01 Generate the weekly summary with new and overdue items | MEDIUM | diff | EPIC-3-01, EPIC-5-02 | 8 | — | OUT OF SCOPE for this run |
+| 24 | SPEC-EPIC-4-02 Summary shows top risks, what is blocked by whom, and decisions needed | LOW | none | EPIC-4-01, EPIC-2-05, EPIC-2-07 | 9 | — | OUT OF SCOPE for this run |
+| 25 | SPEC-EPIC-4-03 Summary shows owners and never exceeds 400 words | MEDIUM | diff | EPIC-4-02 | 10 | — | OUT OF SCOPE for this run |
 
 ## What can run in parallel
 
