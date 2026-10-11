@@ -98,7 +98,8 @@ class InjectedFailure(OSError):
 
 
 def fail_at(monkeypatch, step):
-    """Make one step of the save raise. `pending` fails only the pending.json replace.
+    """Make one step of the save raise. `pending` fails only the pending.json replace
+    and `log` only the raid-log.json replace.
 
     Returns a list that gains one entry each time the failure fires.
     """
@@ -114,15 +115,16 @@ def fail_at(monkeypatch, step):
         monkeypatch.setattr(os, "fsync", boom)
     elif step == "replace":
         monkeypatch.setattr(os, "replace", boom)
-    elif step == "pending":
+    elif step in ("pending", "log"):
+        target = {"pending": "pending.json", "log": "raid-log.json"}[step]
         real_replace = os.replace
 
-        def replace_unless_pending(src, dst, *args, **kwargs):
-            if os.fspath(dst).endswith("pending.json"):
+        def replace_unless_target(src, dst, *args, **kwargs):
+            if os.fspath(dst).endswith(target):
                 boom()
             return real_replace(src, dst, *args, **kwargs)
 
-        monkeypatch.setattr(os, "replace", replace_unless_pending)
+        monkeypatch.setattr(os, "replace", replace_unless_target)
     else:
         raise ValueError(step)
     return fired

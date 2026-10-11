@@ -6,11 +6,13 @@ write, sync and replace calls with ones that raise.
 """
 import itertools
 import json
+from datetime import datetime
 
 import pytest
 
 from helpers import (
     ANOTHER_RISK,
+    USER,
     fail_at,
     run_expecting_failure,
     P2_TITLE,
@@ -144,6 +146,8 @@ def test_save_guard_refuses_dropped_item(tmp_path):
             due_date=None,
             source_excerpt="The test environment has been down since Monday.",
             source_date="2026-10-07",
+            user=USER,
+            now=datetime(2026, 10, 10, 9, 30),
         )
 
     assert "R-001" in str(refused.value)
@@ -209,6 +213,7 @@ def hand_edited_log(tmp_path, ids, **counters):
                 "due_date": None,
                 "status": "Open",
                 "sources": [{"excerpt": "From the notes.", "date": "2026-10-07"}],
+                "history": [{"kind": "created", "timestamp": "2026-10-07T10:00:00", "user": USER}],
             }
             for item_id in ids
         ],

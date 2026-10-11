@@ -9,7 +9,7 @@ PENDING_NAME = "pending.json"
 QUESTION = "Accept or reject? (a/r): "
 
 
-def review(project_dir, store, *, stdin, stdout):
+def review(project_dir, store, *, stdin, stdout, now):
     """Show each pending proposal and take accept or reject. Returns the exit code."""
     pending_path = Path(project_dir) / PENDING_NAME
     proposals = _read_pending(pending_path)
@@ -30,7 +30,7 @@ def review(project_dir, store, *, stdin, stdout):
             return 1
         if answer == "a":
             # Asked on the first accept only; an empty name stops here, before any write.
-            current_user(project_dir, stdin=stdin, stdout=stdout)
+            user = current_user(project_dir, stdin=stdin, stdout=stdout)
             item = store.add_item(
                 type=proposal["type"],
                 title=proposal["title"],
@@ -40,6 +40,8 @@ def review(project_dir, store, *, stdin, stdout):
                 due_date=proposal["due_date"],
                 source_excerpt=proposal["source_excerpt"],
                 source_date=proposal.get("source_date"),
+                user=user,
+                now=now,
             )
             print(f"Accepted as {item['id']}.", file=stdout)
         else:
