@@ -1,0 +1,34 @@
+{
+  "proposals": [
+    {
+      "type": "Risk",
+      "title": "Client security review may delay cutover",
+      "description": "The client security review for the new cloud tenant has not started and could take 3-4 weeks.",
+      "owner": null,
+      "severity": "High",
+      "due_date": null,
+      "source_excerpt": "Tom said the client security review for the new cloud tenant hasn't started; Lena thinks it could take 3-4 weeks. If it slips past 28 Oct we miss the cutover window.",
+      "source_date": "2026-10-07"
+    },
+    {
+      "type": "Issue",
+      "title": "Test environment down",
+      "description": "The test environment has been down since Monday, so sample data cannot be loaded.",
+      "owner": "Priya",
+      "severity": "High",
+      "due_date": null,
+      "source_excerpt": "The test environment has been down since Monday; Lena can't load sample data. Priya to chase infra, no date given.",
+      "source_date": "2026-10-07"
+    },
+    {
+      "type": "Dependency",
+      "title": "Acme finance year-end close",
+      "description": "Cutover depends on Acme's finance team finishing year-end close.",
+      "owner": null,
+      "severity": "Medium",
+      "due_date": "2026-10-25",
+      "source_excerpt": "Cutover depends on Acme's finance team finishing year-end close, expected 25 Oct.",
+      "source_date": "2026-10-07"
+    }
+  ]
+}
