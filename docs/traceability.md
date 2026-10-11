@@ -82,7 +82,7 @@
 
 ## Through SPEC → tests (Stage 6, 2026-10-11)
 
-Each story has one spec with the same number (story EPIC-1-01 → SPEC-EPIC-1-01). Only 8 of the 25 specs are built. Suite on `main` at commit `75860c3`: 329 passed, none failed, none skipped.
+Each story has one spec with the same number (story EPIC-1-01 → SPEC-EPIC-1-01). Only 8 of the 25 specs are built. Suite on `main` at commit `94dcfb1`, Python 3.13.9: 454 passed, none failed, none skipped.
 
 ### Built
 
@@ -96,6 +96,7 @@ Each story has one spec with the same number (story EPIC-1-01 → SPEC-EPIC-1-01
 | EPIC-5-02 | SPEC-EPIC-5-02 | REQ-020, NFR-007 | `tests/test_spec_epic_5_02.py` | 21 | Passed |
 | EPIC-5-04 | SPEC-EPIC-5-04 | NFR-004, NFR-006 | `tests/test_boundaries.py` (with `tests/conftest.py`, `tests/boundary_check.py`) | 29, one of them the guard test for defect D-01 | Passed |
 | EPIC-5-05 | SPEC-EPIC-5-05 | REQ-035 | `tests/test_spec_epic_5_05.py` | 9 | Passed |
+| EPIC-1-01, EPIC-1-02, EPIC-5-01, EPIC-5-04 | No spec of its own: threat review findings F-01, F-02, F-04, F-05 (`docs/threat-review.md`), extending SPEC-EPIC-1-01, 1-02, 5-01 and 5-04 | NFR-003, NFR-005 (stage 5 choice T-24), NFR-006 | `tests/test_threat_review_findings.py` | 125 | Passed |
 
 Each of these 13 REQs and 6 NFRs is cited by its ID in at least one test file (checked by search, 2026-10-11).
 
