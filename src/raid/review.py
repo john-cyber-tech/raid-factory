@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 from raid.atomic import write_atomic
+from raid.identity import current_user
 
 PENDING_NAME = "pending.json"
 QUESTION = "Accept or reject? (a/r): "
@@ -28,6 +29,8 @@ def review(project_dir, store, *, stdin, stdout):
             )
             return 1
         if answer == "a":
+            # Asked on the first accept only; an empty name stops here, before any write.
+            current_user(project_dir, stdin=stdin, stdout=stdout)
             item = store.add_item(
                 type=proposal["type"],
                 title=proposal["title"],

@@ -12,6 +12,8 @@ SAMPLE_NOTES = REPO / "inputs" / "sample-meeting-notes.md"
 
 TODAY = date(2026, 10, 10)
 
+USER = "Sean Murphy"
+
 P1_TITLE = "Client security review may delay cutover"
 P2_TITLE = "Test environment down"
 P3_TITLE = "Acme finance year-end close"
@@ -43,9 +45,17 @@ def run(project_dir, *argv, answers=""):
     return code, out.getvalue()
 
 
-def new_project(tmp_path, name="project", fixture=VALID_THREE):
+def store_name(folder, user=USER):
+    """Give the project a stored user name, so commands do not ask for one."""
+    (folder / "raid-config.json").write_text(json.dumps({"name": user}), encoding="utf-8")
+
+
+def new_project(tmp_path, name="project", fixture=VALID_THREE, user=USER):
+    """A project folder. `user=None` leaves it with no stored name."""
     folder = tmp_path / name
     folder.mkdir()
+    if user is not None:
+        store_name(folder, user)
     if fixture is not None:
         shutil.copy(fixture, folder / "pending.json")
     return folder

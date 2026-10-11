@@ -212,7 +212,9 @@ def test_damaged_log_is_never_overwritten(tmp_path, damaged):
         assert "raid-log.json" in output
         assert log_path(folder).read_bytes() == log_before
         assert (folder / "pending.json").read_bytes() == pending_before
-    assert sorted(path.name for path in folder.iterdir()) == ["pending.json", "raid-log.json"]
+    assert sorted(path.name for path in folder.iterdir()) == [
+        "pending.json", "raid-config.json", "raid-log.json"
+    ]
 
 
 def test_leftover_temp_file_is_harmless(tmp_path):

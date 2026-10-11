@@ -15,9 +15,10 @@ from helpers import REPO, VALID_THREE, log_items, run
 SRC = REPO / "src"
 
 # Every command built so far, with the answers it needs, in an order that works
-# on a fresh project holding the three-proposal fixture.
+# on a fresh project holding the three-proposal fixture and no stored name:
+# the first accept is asked for the name, so raid-config.json is written too.
 COMMANDS = [
-    (("review",), "a\nr\na\n"),
+    (("review",), "a\nSean Murphy\nr\na\n"),
     (("list",), ""),
 ]
 

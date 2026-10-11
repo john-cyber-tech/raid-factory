@@ -4,6 +4,7 @@ import sys
 from datetime import date
 from pathlib import Path
 
+from raid.identity import NameRequired
 from raid.review import review
 from raid.store import LogError, LogStore
 
@@ -31,7 +32,7 @@ def main(argv, *, today, stdin, stdout, project_dir):
         if args.command == "review":
             return review(project_dir, store, stdin=stdin, stdout=stdout)
         return _list(store, stdout)
-    except LogError as error:
+    except (LogError, NameRequired) as error:
         print(error, file=stdout)
         return 1
 
