@@ -1,6 +1,6 @@
 # Stage 6 review — security and delivery check
 
-**Status:** DRAFT, second pass, awaiting the owner's approval · **Date:** 2026-10-11 · **First reviewed at commit:** `75860c3`; fix and re-verification at `94dcfb1` on `main`
+**Status:** DRAFT, third pass, awaiting the owner's approval · **Date:** 2026-10-11 · **First reviewed at commit:** `75860c3`; fix and re-verification at `94dcfb1` on `main`
 **Produced:** `docs/threat-review.md`, `docs/release-note.md`, `docs/traceability.md` (new section "Through SPEC → tests")
 **Scope:** the 8 built specs only (SPEC-EPIC-1-01, 1-02, 1-03, 1-04, 5-01, 5-02, 5-04, 5-05), by the owner's instruction of 2026-10-11.
 **Knowledge used:** `reference/epam/s6-release.md`: classical and AI-specific threats, Likelihood × Impact scoring, access scope and blast radius, bypass-case tests and the verification log, human-owned decisions. The optional skills and `/security-review` were not run.
@@ -45,19 +45,20 @@ The owner also asked for each open gap to be listed by ID (threat review section
 
 **Tests first, failing run shown.** `tests/test_threat_review_findings.py` was written before any code changed. Run then: 125 collected, **124 failed, 1 passed**, no collection error. The failures by test: 54 `raid list` masking, 48 + 2 review screen masking, 1 masked ID in a message, 7 missing field, 9 field that is not text, 2 file mode, 1 `.gitignore`; each on its own assertion (the raw character present, the masked text or the damaged-log message absent, the mode not 0600). The one that passed, `test_empty_owner_and_due_date_are_still_a_valid_log`, pins behaviour that must not change. After the code: 125 passed, whole suite 454 passed.
 
-**Things in the fix that go past the letter of the instruction, for the owner to confirm:**
+**Things in the fix that go past the letter of the instruction.** The owner accepted the first, second and fourth (non-text fields, masked IDs, anchored ignore lines) on 2026-10-11:
 
 - F-02 also refuses a field that is present but not text (a number, a list), because it ended in the same error trace. Only owner and due date may be empty.
 - F-01 also masks an item ID quoted in a damaged-log or refused-save message.
 - F-04: the file is set to 0600 just before it replaces the old one, so a wider existing file or leftover temporary file becomes private at the next save. A file the tool does not write again keeps its mode; the name file is written once only.
 - F-05: the three ignore lines are anchored to the repo root, so fixture files named `pending.json` under `tests/` (used on `wip/spec-1-05`) are not ignored.
-- Masking uses the rules' set of characters, as instructed. Zero-width characters and two direction marks are outside that set and are still printed (threat review TH-01, TH-02; G-11).
+- Masking uses the rules' set of characters, as instructed. Characters outside that set are still printed. **Correction on the third pass:** I had described these as the zero-width characters and two direction marks. A check of every code point shows 161: those, a third direction mark (U+061C), and other invisible formatting characters including the tag characters. All are named in threat review section 3a.
 - While writing the tests I made the mistake defect D-01 describes (literal invisible characters in a test file). Its guard test failed and I replaced them with escapes before committing.
 
 **Other decisions the owner gave:**
 
 - The parked extraction risk is accepted on three conditions: the review is repeated before `wip/spec-1-05` merges; SPEC-EPIC-1-05 does not ship without SPEC-EPIC-1-06; G-16 is settled first. No expiry date was given.
 - The 13 open gaps are accepted for this build.
+- The release note is labelled "demo build, not for distribution".
 - **Release condition:** a dependency scan, starting with pinning the transitive packages, before anyone else gets the build. **Not done. The build is not releasable to others until it is.**
 
 ## Not done
@@ -68,6 +69,8 @@ The owner also asked for each open gap to be listed by ID (threat review section
 - The stage 5 end-to-end test (validate → review → flag → summary) still does not exist.
 - The mode test has not been run on Windows.
 
+Done on the third pass, at the owner's request: the exact unmasked characters named in the threat review (section 3a); a README note that files created before the fix keep their old mode until rewritten; the release note labelled as a demo build.
+
 Done on the second pass: `docs/DEMO-SCRIPT.md` is rewritten for the 8-spec scope (Parts 5 to 7: review and list from a fixture, refused input, no extraction, flags or summary), and the release note states the Python version the tests ran on.
 
 ## Residual risks after the second pass
@@ -77,7 +80,7 @@ Release is the owner's decision. Items 1, 3 and 8 carry the owner's acceptance o
 1. **Parked extraction risk.** Accepted on the three conditions above. Nil exposure on `main`.
 2. **Data at rest (TH-05, Medium):** the files are private to the user but plain text.
 3. **The log is not tamper-evident (TH-04, Medium):** accepted as F-03. G-07 and G-08 are open.
-4. **Zero-width characters are neither refused nor masked (TH-01, TH-02, Low).**
+4. **161 invisible formatting characters are neither refused nor masked (TH-01, TH-02, Low; threat review section 3a).** None is a terminal escape; some can hide text or a difference between two titles.
 5. **Self-declared name (TH-08, Low):** by ADR-005.
 6. **Loss or duplication at the edges (TH-03, Low):** G-03, stage 5 note N-04.
 7. **Unpinned transitive dependencies and no scan (TH-07, Low):** the release condition, not yet met.

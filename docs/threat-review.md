@@ -54,14 +54,28 @@ Everything is a local file in the project folder. There is no model call, no net
 
 | # | Threat | Class · property · asset | Controls | Residual | L×I |
 |---|---|---|---|---|---|
-| TH-01 | A malformed or tampered `pending.json` puts bad data in the log or on the screen | Classical: input validation · Integrity · the log, the terminal | C-01 to C-06 | A well-formed but false proposal is stopped only by the person reading it. Zero-width and direction-mark characters U+200B, U+200E, U+200F and U+FEFF are not in the refused set (the refused list is in G-11) | 2×2 = 4 Low |
-| TH-02 | A hand-edited or tampered `raid-log.json` prints terminal escape or text-direction characters through `raid list` | Classical: output encoding · Integrity · the terminal | C-15, C-16 | F-01 closed. The masked set is the rules' set, so the zero-width and direction-mark characters named in TH-01 are still printed | 1×2 = 2 Low |
+| TH-01 | A malformed or tampered `pending.json` puts bad data in the log or on the screen | Classical: input validation · Integrity · the log, the terminal | C-01 to C-06 | A well-formed but false proposal is stopped only by the person reading it. Some invisible characters are not in the refused set; they are named in section 3a (the refused list is in G-11) | 2×2 = 4 Low |
+| TH-02 | A hand-edited or tampered `raid-log.json` prints terminal escape or text-direction characters through `raid list` | Classical: output encoding · Integrity · the terminal | C-15, C-16 | F-01 closed. The masked set is the rules' set, so the characters named in section 3a are still printed | 1×2 = 2 Low |
 | TH-03 | A crash or disk fault loses or corrupts the log | Classical: data loss · Availability, Integrity · the log | C-07 to C-10 | No folder sync after the replace, so the very last save may not survive a power loss (stage 5 note N-04). A failed disk write ends in a Python error trace, not a plain message (G-03b). An accept can be repeated after a failed trim of `pending.json` and make a second item (G-03a) | 1×3 = 3 Low |
 | TH-04 | Someone with access to the folder changes items or history by editing `raid-log.json` | Classical: tampering, access control · Integrity · the audit history | C-09 and C-16 catch only a damaged file | **Finding F-03, accepted by the owner on 2026-10-11 as a documented design limit.** The history is append-only against the tool, not against a text editor. It is not tamper-evident | 2×3 = 6 Medium |
 | TH-05 | Client or project data in the three JSON files is read by another user of the machine, or committed to a repository | Classical: data exposure · Confidentiality · notes excerpts, names | C-17, C-18 | F-04 and F-05 closed. The files are still plain text, not encrypted. A file written by an earlier build keeps its mode until the tool next writes it, and the name file is written once only. A project folder kept in another git repository needs its own ignore lines (README) | 2×3 = 6 Medium |
 | TH-06 | Sensitive data leaks through logs or error output | Classical: data exposure · Confidentiality · excerpts | No logging; C-03 | Source excerpts are shown on the review screen by design. F-02 closed. A failed disk write still ends in a Python error trace (G-03b), which shows file paths, not field values | 1×2 = 2 Low |
 | TH-07 | The tool or a dependency sends data out, or a dependency is compromised | Classical: exfiltration, supply chain · Confidentiality · all data | C-11 to C-13 | `jsonschema` is pinned at 4.25.0; the packages it pulls in are not pinned. **No dependency scan was run** for this review. The socket block does not cover the one test that starts a child process, and a write to an absolute path outside the watched folder would not be seen (stage 5 notes N-06, N-08) | 1×4 = 4 Low |
 | TH-08 | An item's history names the wrong person | Classical: spoofing · Integrity · the audit history | None, by decision: the name is self-declared (ADR-005) | Anyone can type any name; a damaged `raid-config.json` is replaced without a word (G-06) | 2×2 = 4 Low |
+
+## 3a. Characters left unmasked and unrefused
+
+The rules refuse, and the output masks, U+0000 to U+001F, U+007F to U+009F, U+2028, U+2029, U+202A to U+202E and U+2066 to U+2069. Checked by running `rules.mask` over every code point on 2026-10-11 (Python 3.13.9, Unicode 15.1.0): 161 invisible formatting characters (Unicode category Cf) pass through unchanged, in `pending.json` and on the screen. An earlier draft of this review named four of them; this is the full list.
+
+| Group | Characters |
+|---|---|
+| Zero-width (5) | U+200B zero width space · U+200C zero width non-joiner · U+200D zero width joiner · U+2060 word joiner · U+FEFF zero width no-break space (byte order mark) |
+| Direction marks (2) | U+200E left-to-right mark · U+200F right-to-left mark |
+| A third direction mark (1) | U+061C Arabic letter mark |
+| Other invisible or formatting characters below U+3000 (23) | U+00AD soft hyphen · U+0600 to U+0605, U+06DD, U+070F, U+0890, U+0891, U+08E2 (Arabic and Syriac number and abbreviation marks) · U+180E Mongolian vowel separator · U+2061 to U+2064 (invisible mathematical operators) · U+206A to U+206F (deprecated shaping and swapping controls) |
+| Higher ranges (130) | U+FFF9 to U+FFFB (interlinear annotation) · U+110BD, U+110CD · U+13430 to U+1343F · U+1BCA0 to U+1BCA3 · U+1D173 to U+1D17A · U+E0001 and U+E0020 to U+E007F (tag characters, 97, which can carry hidden text) |
+
+What they can do: none moves the cursor or changes colour as an escape sequence does. They can hide a difference between two titles that look the same, shift how a line reads, or carry text a person cannot see. The embedding, override and isolate controls that reorder a whole line are refused and masked. Zero-width joiners are also part of ordinary text in some scripts and in joined emoji, so refusing them all is a decision for the owner under G-11, not a fix made here.
 
 ## 4. Findings from this review
 

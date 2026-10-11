@@ -1,10 +1,14 @@
 # Release note — RAID Log Manager 0.1.0, partial build (Stage 6)
 
+**DEMO BUILD, NOT FOR DISTRIBUTION.**
+
 **Status:** DRAFT for the owner, second pass · **Date:** 2026-10-11 · **Commit:** `94dcfb1` on `main`
 **Tested on:** Python 3.13.9 (macOS), 454 passed, none failed, none skipped. Not run on Python 3.12, the declared minimum, and not run on Windows.
 **Upstream:** `docs/specs/`, `docs/task-dag.md`, `docs/reviews/stage-5-review.md`, `docs/threat-review.md`
 
 **8 of the 25 specs are built.** This is not the full tool described in the brief. By the owner's decision of 2026-10-11 the build stopped after SPEC-EPIC-1-01, 1-02, 1-03, 1-04, 5-01, 5-02, 5-04 and 5-05. This note describes only those, plus the fixes for threat review findings F-01, F-02, F-04 and F-05. Release is the owner's decision.
+
+**Demo build, not for distribution.** It is for showing the factory, on the fictional Acme inputs only.
 
 **Release condition set by the owner, not yet met:** a dependency scan, starting with pinning the packages `jsonschema` pulls in, before anyone else gets this build.
 
@@ -72,7 +76,8 @@ From `docs/threat-review.md` and the open gaps in `docs/reviews/stage-5-review.m
 
 - An item cannot be changed, closed or viewed in full once accepted; only listed.
 - **The log is not tamper-evident (F-03, accepted as a design limit).** The history is append-only against the tool. Someone who edits `raid-log.json` by hand can change a field, a status or the history, and the tool will not notice as long as the file is still a well-formed log.
-- Masking covers the characters the field rules refuse. Zero-width characters and the two direction marks (U+200B, U+200E, U+200F, U+FEFF) are neither refused nor masked.
+- Masking covers the characters the field rules refuse. 161 other invisible formatting characters are neither refused nor masked, among them the zero-width characters (U+200B, U+200C, U+200D, U+2060, U+FEFF) and the direction marks (U+200E, U+200F, U+061C). The full list is in `docs/threat-review.md`, section 3a.
+- A data file created before the 0600 fix keeps its old mode until the tool next writes it. The name file is written once, so an old one stays as it was.
 - The three files are plain text, not encrypted. A project folder kept in its own git repository needs its own ignore lines for them (README).
 - If the log is saved but `pending.json` cannot then be trimmed, the proposal is shown again and a second accept makes a second item (G-03a). A failed disk write shows a Python error trace (G-03b).
 - The name in the history is whatever was typed; it is not verified. A damaged `raid-config.json` is replaced without a message (G-06).

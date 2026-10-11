@@ -44,6 +44,11 @@ Run `raid` from a project folder. It keeps three files there:
 The tool creates these files readable by you only (mode 0600). They are plain text and can hold
 client material: if the project folder is kept in git, add all three to its `.gitignore`.
 
+Files created before that fix (commit `94dcfb1`) keep their old mode, readable by other users of the
+machine, until the tool next writes them. `raid-log.json` and `pending.json` are rewritten on the
+next accept or reject; `raid-config.json` is written once and is not rewritten. To fix old files
+now: `chmod 600 raid-log.json pending.json raid-config.json`.
+
 **`raid review`** checks the whole of `pending.json` first. If any proposal is invalid it lists
 the problems, shows nothing and changes nothing (exit 1). Otherwise it shows each proposal with
 its source excerpt and asks `Accept, edit or reject? (a/e/r):`
