@@ -4,7 +4,7 @@ from pathlib import Path
 
 from raid.atomic import write_atomic
 from raid.identity import current_user
-from raid.rules import RuleError, check
+from raid.rules import RuleError, check, is_real_date
 from raid.validator import PENDING_NAME, validate
 
 QUESTION = "Accept, edit or reject? (a/e/r): "
@@ -35,8 +35,12 @@ def review(project_dir, store, *, stdin, stdout, now):
         return 0
 
     total = len(proposals)
+    extracted = None
     while proposals:
         proposal = proposals[0]
+        if extracted is None:
+            # Kept to tell, at accept, which fields the manager changed (see add_item).
+            extracted = dict(proposal)
         _show(proposal, total - len(proposals) + 1, total, stdout)
         answer = _ask(stdin, stdout)
         if answer == "e":
@@ -44,6 +48,17 @@ def review(project_dir, store, *, stdin, stdout, now):
             answer = "e" if _edit(proposal, stdin, stdout) else None
         if answer == "e":
             continue
+        if answer == "a" and not proposal.get("source_date"):
+            # No item is accepted without the date of the notes (DEC-08). It is settled
+            # before the name, so a cancelled accept asks for nothing else and writes nothing.
+            source_date = _ask_source_date(stdin, stdout, today=now.date())
+            if source_date == "":
+                print("Not accepted: an item needs the date of the notes.", file=stdout)
+                continue
+            if source_date is None:
+                answer = None
+            else:
+                proposal["source_date"] = source_date
         if answer is None:
             print(
                 f"\nInput ended. {len(proposals)} proposal(s) left in {PENDING_NAME}.",
@@ -61,15 +76,17 @@ def review(project_dir, store, *, stdin, stdout, now):
                 severity=proposal["severity"],
                 due_date=proposal["due_date"],
                 source_excerpt=proposal["source_excerpt"],
-                source_date=proposal.get("source_date"),
+                source_date=proposal["source_date"],
                 user=user,
                 now=now,
+                edited=[field for field in EDITABLE if proposal[field] != extracted[field]],
             )
             print(f"Accepted as {item['id']}.", file=stdout)
         else:
             print("Rejected.", file=stdout)
         # Decided proposals leave pending.json at once; rejections are kept nowhere (DEC-10).
         proposals = proposals[1:]
+        extracted = None
         _write_pending(pending_path, proposals)
     return 0
 
@@ -87,6 +104,31 @@ def _show(proposal, number, total, stdout):
     print(f"  Severity:    {proposal['severity']}", file=stdout)
     print(f"  Due date:    {proposal['due_date'] or '-'}", file=stdout)
     print(f"  Source:      \"{proposal['source_excerpt']}\"", file=stdout)
+    print(f"  Source date: {proposal.get('source_date') or '-'}", file=stdout)
+
+
+def _ask_source_date(stdin, stdout, *, today):
+    """Ask for the date of the notes until a usable one is given.
+
+    Returns the date, "" when the answer is empty (the accept is cancelled),
+    or None when the input ends.
+    """
+    while True:
+        stdout.write("Date of the notes (YYYY-MM-DD): ")
+        stdout.flush()
+        line = stdin.readline()
+        if line == "":
+            return None
+        value = line.strip()
+        if value == "":
+            return ""
+        if not is_real_date(value):
+            print("That is not a date. Write it as YYYY-MM-DD, for example 2026-10-07.",
+                  file=stdout)
+        elif value > today.isoformat():
+            print(f"The notes cannot be dated after today ({today.isoformat()}).", file=stdout)
+        else:
+            return value
 
 
 def _edit(proposal, stdin, stdout):

@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 from raid.atomic import write_atomic
-from raid.rules import RuleError, check
+from raid.rules import RuleError, check, check_source
 
 LOG_NAME = "raid-log.json"
 SCHEMA_VERSION = 1
@@ -54,6 +54,14 @@ def _problem(data):
             return f"item {position} has no id"
         if not isinstance(item.get("history"), list) or not item["history"]:
             return f"{item['id']} has no history"
+        sources = item.get("sources")
+        first = sources[0] if isinstance(sources, list) and sources else None
+        try:
+            if not isinstance(first, dict):
+                raise RuleError("no source")
+            check_source(first.get("excerpt"), first.get("date"))
+        except RuleError:
+            return f"{item['id']} has no source excerpt with a real source date"
     # A counter at or below an existing ID would give that ID out a second time (REQ-011).
     for item in items:
         match = ID_PATTERN.fullmatch(item["id"])
@@ -91,8 +99,17 @@ class LogStore:
         return list(self._data["items"])
 
     def add_item(self, *, type, title, description, owner, severity, due_date,
-                 source_excerpt, source_date, user, now):
-        """Add an Open item with the next ID for its type and its creation entry, in one save."""
+                 source_excerpt, source_date, user, now, edited=()):
+        """Add an Open item with the next ID for its type and its creation entry, in one save.
+
+        The item must have its source: the excerpt and the date of the notes (REQ-012).
+        `edited` names the fields the manager changed before accepting; when there are
+        any, the creation entry lists them (names only), otherwise it has no such key.
+        """
+        try:
+            check_source(source_excerpt, source_date)
+        except RuleError as error:
+            raise LogError(f"Not added: {error}. Nothing was changed.") from error
         data = copy.deepcopy(self._data)
         number = data["next_number"][type]
         item = {
@@ -105,7 +122,7 @@ class LogStore:
             "due_date": due_date,
             "status": "Open",
             "sources": [{"excerpt": source_excerpt, "date": source_date}],
-            "history": [_entry("created", user, now)],
+            "history": [_entry("created", user, now, **({"edited": list(edited)} if edited else {}))],
         }
         data["next_number"][type] = number + 1
         data["items"].append(item)

@@ -60,6 +60,14 @@ def check(field, value):
     return value
 
 
+def check_source(excerpt, source_date):
+    """An item's source needs the words it came from and the date of the notes (REQ-012, DEC-08)."""
+    if not isinstance(excerpt, str) or not excerpt.strip():
+        raise RuleError("an item needs a source excerpt")
+    if not is_real_date(source_date):
+        raise RuleError("an item needs a source date, a real date written as YYYY-MM-DD")
+
+
 def _one_of(field, value, allowed):
     if value not in allowed:
         raise RuleError(f"{field} must be {', '.join(allowed[:-1])} or {allowed[-1]}")
